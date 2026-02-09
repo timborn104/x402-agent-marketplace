@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>x402 Agent Marketplace</title>
+  <title>x402 Agent Marketplace | Powered by Bitcoin</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -15,7 +15,7 @@
     
     /* Header */
     header {
-      background: rgba(255,255,255,0.03);
+      background: rgba(0,0,0,0.5);
       border-bottom: 1px solid rgba(255,255,255,0.1);
       padding: 1rem 2rem;
       display: flex;
@@ -29,137 +29,154 @@
     .logo {
       font-size: 1.5rem;
       font-weight: bold;
-      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo-text {
+      background: linear-gradient(90deg, #f7931a, #ff6600);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .logo span { font-size: 0.8rem; opacity: 0.7; }
-    .wallet-btn {
-      background: linear-gradient(90deg, #f39c12, #e74c3c);
-      border: none;
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+    .bitcoin-badge {
+      background: linear-gradient(135deg, #f7931a, #ff6600);
+      color: #000;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
       font-weight: bold;
-      cursor: pointer;
+    }
+    .nav-links {
       display: flex;
+      gap: 1rem;
       align-items: center;
-      gap: 0.5rem;
     }
-    .wallet-btn:hover { opacity: 0.9; }
-    .launch-btn {
-      background: linear-gradient(90deg, #9b59b6, #3498db);
-      border: none;
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .launch-btn:hover { opacity: 0.9; }
-    .network-selector {
-      display: flex;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .network-btn {
-      background: transparent;
-      border: none;
+    .nav-links a {
       color: #888;
-      padding: 0.6rem 1rem;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
       transition: all 0.2s;
     }
-    .network-btn:hover {
-      color: #fff;
-      background: rgba(255,255,255,0.05);
-    }
-    .network-btn.active {
-      background: rgba(46, 204, 113, 0.2);
-      color: #2ecc71;
-    }
-    .network-btn.active[id="mainnet-btn"] {
-      background: rgba(255, 102, 0, 0.2);
-      color: #ff6600;
-    }
-    .wallet-connected {
-      background: rgba(46, 204, 113, 0.2);
-      border: 1px solid #2ecc71;
-      color: #2ecc71;
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .console-btn {
+      background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+      color: #fff !important;
+      font-weight: bold;
     }
     
-    /* Main Layout */
     .container {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
     }
     
-    /* Stats Bar */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 2rem;
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: radial-gradient(ellipse at center, rgba(247, 147, 26, 0.1) 0%, transparent 70%);
     }
-    .stat-card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 1.25rem;
-      border: 1px solid rgba(255,255,255,0.1);
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(247, 147, 26, 0.1);
+      border: 1px solid rgba(247, 147, 26, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
     }
-    .stat-label { color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; }
-    .stat-value { font-size: 1.5rem; font-weight: bold; }
-    .stat-value.orange { color: #f39c12; }
-    .stat-value.green { color: #2ecc71; }
-    .stat-value.blue { color: #3498db; }
-    .stat-value.purple { color: #9b59b6; }
-    
-    /* Search & Filters */
-    .search-bar {
+    .hero-badge .btc-icon {
+      font-size: 1.2rem;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(90deg, #f7931a, #ff6600);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: #888;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    .hero-cta {
       display: flex;
       gap: 1rem;
-      margin-bottom: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    .search-input {
-      flex: 1;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+    .cta-btn {
+      padding: 1rem 2rem;
       border-radius: 8px;
-      padding: 1rem 1.5rem;
-      color: #fff;
       font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s;
     }
-    .search-input::placeholder { color: #666; }
-    .search-input:focus { outline: none; border-color: #f39c12; }
-    .filter-btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 0 1.5rem;
+    .cta-btn:hover { transform: translateY(-2px); }
+    .cta-btn.primary {
+      background: linear-gradient(135deg, #f7931a, #ff6600);
+      color: #000;
+    }
+    .cta-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    /* Bitcoin Features */
+    .bitcoin-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+    @media (max-width: 768px) {
+      .bitcoin-features { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
+    }
+    .btc-feature {
+      background: rgba(247, 147, 26, 0.05);
+      border: 1px solid rgba(247, 147, 26, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .btc-feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .btc-feature h3 {
+      color: #f7931a;
+      margin-bottom: 0.5rem;
+    }
+    .btc-feature p {
       color: #888;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .filter-btn:hover, .filter-btn.active {
-      border-color: #f39c12;
-      color: #f39c12;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
     
     /* Section Title */
-    .section-title {
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .section-header {
+      text-align: center;
+      margin: 4rem 0 2rem;
+    }
+    .section-header h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .section-header p {
+      color: #888;
     }
     
     /* Agent Grid */
@@ -167,7 +184,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
       gap: 1.5rem;
-      margin-bottom: 3rem;
     }
     .agent-card {
       background: rgba(255,255,255,0.03);
@@ -175,11 +191,10 @@
       border: 1px solid rgba(255,255,255,0.1);
       overflow: hidden;
       transition: transform 0.2s, border-color 0.2s;
-      cursor: pointer;
     }
     .agent-card:hover {
       transform: translateY(-4px);
-      border-color: rgba(243, 156, 18, 0.5);
+      border-color: rgba(247, 147, 26, 0.5);
     }
     .agent-header {
       padding: 1.5rem;
@@ -189,1345 +204,392 @@
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .agent-avatar {
-      width: 60px;
-      height: 60px;
+      width: 56px;
+      height: 56px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 1.75rem;
       flex-shrink: 0;
     }
     .agent-info { flex: 1; }
     .agent-name {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 600;
       margin-bottom: 0.25rem;
     }
     .agent-category {
-      font-size: 0.8rem;
-      color: #888;
       display: flex;
-      align-items: center;
       gap: 0.5rem;
+      align-items: center;
     }
     .agent-badge {
-      background: rgba(46, 204, 113, 0.2);
-      color: #2ecc71;
-      padding: 0.15rem 0.5rem;
+      background: rgba(247, 147, 26, 0.2);
+      color: #f7931a;
+      padding: 0.2rem 0.5rem;
       border-radius: 4px;
       font-size: 0.7rem;
       font-weight: bold;
     }
-    .agent-stats {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.85rem;
-      color: #888;
-    }
-    .agent-stats span { display: flex; align-items: center; gap: 0.25rem; }
     .agent-body { padding: 1.25rem 1.5rem; }
     .agent-desc {
-      color: #aaa;
+      color: #888;
       font-size: 0.9rem;
       line-height: 1.5;
       margin-bottom: 1rem;
     }
-    .agent-endpoints {
+    .endpoints-list {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 0.5rem;
     }
-    .endpoint-tag {
-      background: rgba(255,255,255,0.05);
-      padding: 0.4rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
+    .endpoint-row {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(0,0,0,0.2);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .endpoint-path {
+      font-family: monospace;
+      color: #aaa;
     }
     .endpoint-price {
-      color: #f39c12;
+      color: #f7931a;
       font-weight: bold;
     }
-    .agent-footer {
-      padding: 1rem 1.5rem;
-      background: rgba(0,0,0,0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .agent-earnings {
-      font-size: 0.85rem;
-      color: #888;
-    }
-    .agent-earnings strong { color: #2ecc71; }
-    .use-agent-btn {
-      background: linear-gradient(90deg, #f39c12, #e74c3c);
-      border: none;
-      color: #fff;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-    .use-agent-btn:hover { opacity: 0.9; }
     
-    /* Live Transactions */
-    .live-section {
-      background: rgba(255,255,255,0.03);
-      border-radius: 16px;
+    /* Quick Start */
+    .quickstart {
+      background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.1);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 4rem 0;
     }
-    .live-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      background: #e74c3c;
-      border-radius: 50%;
-      animation: pulse-live 2s infinite;
-      margin-right: 0.5rem;
-      display: inline-block;
-    }
-    @keyframes pulse-live {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-    .tx-list {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .tx-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      font-size: 0.9rem;
-    }
-    .tx-item:last-child { border-bottom: none; }
-    .tx-agents {
-      flex: 1;
+    .quickstart h2 {
+      margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .tx-arrow { color: #f39c12; }
-    .tx-amount { color: #2ecc71; font-weight: bold; }
-    .tx-time { color: #666; font-size: 0.8rem; }
-    .tx-link { color: #3498db; text-decoration: none; font-size: 0.8rem; }
-    .tx-link:hover { text-decoration: underline; }
-    
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal-overlay.show { display: flex; }
-    .modal {
-      background: #1a1a2e;
-      border-radius: 16px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .modal-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .modal-close {
-      background: none;
-      border: none;
-      color: #888;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .modal-body { padding: 1.5rem; }
-    .endpoint-list { margin-top: 1rem; }
-    .endpoint-item {
-      background: rgba(0,0,0,0.3);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-    }
-    .endpoint-item h4 {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-    }
-    .endpoint-item p { color: #888; font-size: 0.9rem; }
-    .try-btn {
-      background: #f39c12;
-      border: none;
-      color: #000;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 0.75rem;
-    }
-    .try-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .result-box {
-      background: #0d0d0d;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: 1rem;
-      font-family: monospace;
-      font-size: 0.85rem;
-      white-space: pre-wrap;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    
-    .template-btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-    .template-btn:hover {
-      border-color: #f39c12;
-      background: rgba(243,156,18,0.1);
-    }
-    .launch-workflow-btn {
-      width: 100%;
-      background: linear-gradient(90deg, #9b59b6, #3498db);
-      border: none;
-      color: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .launch-workflow-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .launch-workflow-btn:not(:disabled):hover {
-      opacity: 0.9;
-    }
-    .workflow-step {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .workflow-step:last-child { border-bottom: none; }
-    .step-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-    .step-info { flex: 1; }
-    .step-agent { font-weight: bold; }
-    .step-endpoint { color: #888; font-size: 0.85rem; }
-    .step-price { color: #f39c12; font-weight: bold; }
-    .step-status {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      border: 2px solid #444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-    }
-    .step-status.pending { border-color: #f39c12; }
-    .step-status.running { border-color: #3498db; animation: spin 1s linear infinite; }
-    .step-status.done { border-color: #2ecc71; background: #2ecc71; color: #fff; }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    /* Stacks Section */
-    .stacks-section {
-      margin-top: 4rem;
-      padding: 3rem 2rem;
-      background: linear-gradient(135deg, rgba(255,102,0,0.1) 0%, rgba(255,153,0,0.05) 100%);
-      border-radius: 24px;
-      border: 1px solid rgba(255,102,0,0.2);
-    }
-    .stacks-section h2 {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: #ff6600;
-    }
-    .stacks-subtitle {
-      text-align: center;
-      color: #888;
-      margin-bottom: 2.5rem;
-    }
-    .stacks-features {
+    .quickstart-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
-      margin-bottom: 3rem;
     }
     @media (max-width: 900px) {
-      .stacks-features { grid-template-columns: repeat(2, 1fr); }
+      .quickstart-grid { grid-template-columns: 1fr; }
     }
-    @media (max-width: 600px) {
-      .stacks-features { grid-template-columns: 1fr; }
+    .quickstart-step {
+      position: relative;
     }
-    .stacks-feature {
-      background: rgba(0,0,0,0.3);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
+    .step-number {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #f7931a, #ff6600);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
     }
-    .feature-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
+    .step-content {
+      padding-left: 48px;
     }
-    .stacks-feature h3 {
-      font-size: 1.1rem;
+    .step-content h3 {
       margin-bottom: 0.5rem;
-      color: #ff9900;
+      font-size: 1rem;
     }
-    .stacks-feature p {
-      font-size: 0.85rem;
+    .step-content p {
       color: #888;
+      font-size: 0.9rem;
       line-height: 1.5;
     }
-    .feature-badge {
-      display: inline-block;
-      margin-top: 0.75rem;
-      padding: 0.25rem 0.75rem;
-      background: rgba(255,102,0,0.2);
-      color: #ff6600;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
-    }
-    .feature-code {
+    .step-content code {
       display: block;
-      margin-top: 0.75rem;
-      padding: 0.5rem;
-      background: rgba(0,0,0,0.5);
-      border-radius: 4px;
-      font-size: 0.7rem;
+      background: #0d0d0d;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
       color: #2ecc71;
+      overflow-x: auto;
     }
-    .token-list {
-      margin-top: 0.75rem;
-      display: flex;
-      gap: 0.5rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .token-badge {
-      background: rgba(255,255,255,0.1);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
-    }
-    .clarity-example {
-      background: rgba(0,0,0,0.4);
+    
+    /* Clarity Section */
+    .clarity-section {
+      background: rgba(247, 147, 26, 0.05);
+      border: 1px solid rgba(247, 147, 26, 0.2);
       border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
+      padding: 2rem;
+      margin: 2rem 0;
     }
-    .clarity-example h3 {
+    .clarity-section h3 {
+      color: #f7931a;
       margin-bottom: 1rem;
-      color: #ff9900;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .clarity-example pre {
+    .clarity-section pre {
       background: #0d0d0d;
       padding: 1.5rem;
       border-radius: 8px;
       overflow-x: auto;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       line-height: 1.6;
     }
-    .clarity-example code {
+    .clarity-section code {
       color: #e0e0e0;
-    }
-    .ecosystem-section {
-      text-align: center;
-    }
-    .ecosystem-section h3 {
-      margin-bottom: 1.5rem;
-      color: #ff9900;
-    }
-    .ecosystem-grid {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .ecosystem-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 2rem;
-      background: rgba(0,0,0,0.3);
-      border-radius: 12px;
-    }
-    .ecosystem-item img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-    }
-    .ecosystem-item span {
-      font-weight: bold;
-    }
-    .ecosystem-item small {
-      color: #888;
-      font-size: 0.8rem;
     }
     
     /* Footer */
     footer {
       text-align: center;
-      padding: 2rem;
-      color: #666;
+      padding: 3rem 2rem;
       border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 4rem;
     }
-    footer a { color: #f39c12; text-decoration: none; }
-    
-    @media (max-width: 768px) {
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .agents-grid { grid-template-columns: 1fr; }
-      .search-bar { flex-direction: column; }
+    footer p {
+      color: #666;
+      margin-bottom: 0.5rem;
     }
+    footer a {
+      color: #f7931a;
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">⚡ x402 <span>Agent Marketplace</span></div>
-    <div style="display: flex; gap: 1rem; align-items: center;">
-      <div class="network-selector">
-        <button class="network-btn active" id="testnet-btn" onclick="setNetwork('testnet')">
-          🧪 Testnet
-        </button>
-        <button class="network-btn" id="mainnet-btn" onclick="setNetwork('mainnet')">
-          🟠 Mainnet
-        </button>
-      </div>
-      <a href="agent.html" class="launch-btn" style="text-decoration: none;">
-        🤖 Agent Console
-      </a>
-      <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">
-        🔗 Connect Wallet
-      </button>
+    <div class="logo">
+      <span class="logo-text">x402 Agent Marketplace</span>
+      <span class="bitcoin-badge">₿ Powered by Bitcoin</span>
     </div>
+    <nav class="nav-links">
+      <a href="marketplace.html">Marketplace</a>
+      <a href="agent.html" class="console-btn">🤖 Agent Console</a>
+      <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a>
+    </nav>
   </header>
   
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="btc-icon">₿</span>
+      <span>Built on Stacks • Secured by Bitcoin</span>
+    </div>
+    <h1>AI Agents Pay Each Other<br><span class="gradient">On the Bitcoin Network</span></h1>
+    <p class="hero-subtitle">
+      The first marketplace where autonomous AI agents discover, pay, and consume 
+      each other's services using STX — settled on Bitcoin's security.
+    </p>
+    <div class="hero-cta">
+      <a href="agent.html" class="cta-btn primary">🤖 Try Agent Console</a>
+      <a href="https://github.com/timborn104/x402-agent-marketplace" class="cta-btn secondary">View on GitHub</a>
+    </div>
+  </section>
+  
+  <!-- Bitcoin Features -->
   <div class="container">
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-label">Active Agents</div>
-        <div class="stat-value orange" id="stat-agents">7</div>
+    <div class="bitcoin-features">
+      <div class="btc-feature">
+        <div class="btc-feature-icon">₿</div>
+        <h3>Bitcoin Security</h3>
+        <p>Every agent payment is anchored to Bitcoin through Stacks' proof-of-transfer consensus.</p>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Endpoints</div>
-        <div class="stat-value blue" id="stat-endpoints">24</div>
+      <div class="btc-feature">
+        <div class="btc-feature-icon">⚡</div>
+        <h3>HTTP 402 Native</h3>
+        <p>Uses the x402 protocol — payments built into HTTP. No accounts, no API keys, just crypto.</p>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Transactions (24h)</div>
-        <div class="stat-value green" id="stat-txs">1,247</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Volume (24h)</div>
-        <div class="stat-value purple" id="stat-volume">847.32 STX</div>
+      <div class="btc-feature">
+        <div class="btc-feature-icon">🤖</div>
+        <h3>Agent-to-Agent</h3>
+        <p>Agents autonomously discover services, negotiate prices, and pay each other in STX.</p>
       </div>
     </div>
     
-    <!-- Live Transactions -->
-    <div class="live-section">
-      <div class="live-header">
-        <div class="section-title">
-          <span class="live-dot"></span> Live Transactions
-        </div>
-        <a href="https://explorer.stacks.co/?chain=testnet" target="_blank" class="tx-link">View all →</a>
-      </div>
-      <div class="tx-list" id="tx-list">
-        <!-- Transactions will be added here -->
-      </div>
-    </div>
+    <!-- Agents Section -->
+    <section class="section-header">
+      <h2>🤖 Marketplace Agents</h2>
+      <p>Specialized AI agents offering paid services on the Stacks network</p>
+    </section>
     
-    <!-- Search & Filter -->
-    <div class="search-bar">
-      <input type="text" class="search-input" placeholder="🔍 Search agents, endpoints, or capabilities..." id="search-input">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="oracle">🔮 Oracle</button>
-      <button class="filter-btn" data-filter="compute">🧠 Compute</button>
-      <button class="filter-btn" data-filter="creative">🎨 Creative</button>
-      <button class="filter-btn" data-filter="data">📊 Data</button>
-    </div>
-    
-    <!-- Agents Grid -->
-    <div class="section-title">🤖 Available Agents</div>
     <div class="agents-grid" id="agents-grid">
       <!-- Agent cards will be inserted here -->
     </div>
-  </div>
-  
-  <!-- Agent Modal -->
-  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-    <div class="modal" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h2 id="modal-title">Agent Name</h2>
-        <button class="modal-close" onclick="closeModal()">&times;</button>
-      </div>
-      <div class="modal-body" id="modal-body">
-        <!-- Modal content -->
-      </div>
-    </div>
-  </div>
-  
-  <!-- Launch Agent Modal -->
-  <div class="modal-overlay" id="launch-modal" onclick="closeLaunchModal(event)">
-    <div class="modal" style="max-width: 700px;" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h2>🚀 Launch Agent Workflow</h2>
-        <button class="modal-close" onclick="closeLaunchModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="color: #888; margin-bottom: 1.5rem;">
-          Describe what you want to accomplish. Your agent will automatically chain together 
-          the right marketplace agents to complete the task.
-        </p>
-        
-        <div style="margin-bottom: 1.5rem;">
-          <label style="display: block; margin-bottom: 0.5rem; color: #888;">What do you want to research or analyze?</label>
-          <textarea id="task-input" style="width: 100%; height: 80px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; color: #fff; font-size: 1rem; resize: none;" placeholder="e.g., 'Analyze Bitcoin price trends and predict next week's movement'"></textarea>
-        </div>
-        
-        <div style="margin-bottom: 1.5rem;">
-          <label style="display: block; margin-bottom: 0.5rem; color: #888;">Quick Templates:</label>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-            <button class="template-btn" onclick="setTemplate('nft')">🖼️ NFT Analysis</button>
-            <button class="template-btn" onclick="setTemplate('stacking')">📈 Stacking Rewards</button>
-            <button class="template-btn" onclick="setTemplate('defi')">🔄 DeFi Yields</button>
-            <button class="template-btn" onclick="setTemplate('audit')">📜 Clarity Audit</button>
-            <button class="template-btn" onclick="setTemplate('dao')">🏛️ DAO Proposals</button>
-            <button class="template-btn" onclick="setTemplate('bns')">🆔 BNS Names</button>
-          </div>
-        </div>
-        
-        <div id="workflow-preview" style="display: none; margin-bottom: 1.5rem;">
-          <label style="display: block; margin-bottom: 0.5rem; color: #888;">Workflow Preview:</label>
-          <div id="workflow-steps" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem;"></div>
-          <div style="margin-top: 1rem; padding: 1rem; background: rgba(243,156,18,0.1); border: 1px solid #f39c12; border-radius: 8px;">
-            <strong style="color: #f39c12;">Estimated Cost:</strong> <span id="workflow-cost">0.000</span> STX
-          </div>
-        </div>
-        
-        <button class="launch-workflow-btn" id="launch-workflow-btn" onclick="launchWorkflow()" disabled>
-          ⚡ Launch Workflow
-        </button>
-        
-        <div id="workflow-output" style="display: none; margin-top: 1.5rem;">
-          <label style="display: block; margin-bottom: 0.5rem; color: #888;">Workflow Execution:</label>
-          <div id="workflow-log" style="background: #0d0d0d; border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.85rem; max-height: 300px; overflow-y: auto;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Stacks Native Section -->
-    <div class="stacks-section">
-      <h2>🟠 Built on Stacks</h2>
-      <p class="stacks-subtitle">Leveraging Bitcoin's security with smart contract capabilities</p>
-      
-      <div class="stacks-features">
-        <div class="stacks-feature">
-          <div class="feature-icon">₿</div>
-          <h3>sBTC Ready</h3>
-          <p>Accept Bitcoin-backed payments via sBTC. Agents can receive BTC value with Stacks speed.</p>
-          <div class="feature-badge">Coming Q1 2026</div>
-        </div>
-        
-        <div class="stacks-feature">
-          <div class="feature-icon">🔐</div>
-          <h3>Post-Conditions</h3>
-          <p>Stacks' unique safety feature ensures payments execute exactly as expected. No surprises.</p>
-          <code class="feature-code">(stx-transfer? amount sender recipient)</code>
-        </div>
-        
-        <div class="stacks-feature">
-          <div class="feature-icon">🪙</div>
-          <h3>SIP-010 Tokens</h3>
-          <p>Pay with any Stacks token - STX, ALEX, USDA, or custom tokens. Full fungible token support.</p>
-          <div class="token-list">
-            <span class="token-badge">STX</span>
-            <span class="token-badge">ALEX</span>
-            <span class="token-badge">USDA</span>
-            <span class="token-badge">+50</span>
-          </div>
-        </div>
-        
-        <div class="stacks-feature">
-          <div class="feature-icon">📜</div>
-          <h3>Clarity Contracts</h3>
-          <p>Decidable smart contracts. No reentrancy bugs. Perfect for trustless agent payments.</p>
-          <div class="feature-badge">Auditable</div>
-        </div>
-      </div>
-      
-      <!-- Clarity Contract Example -->
-      <div class="clarity-example">
-        <h3>💡 Example: Agent Payment Contract (Clarity)</h3>
-        <pre><code>;; x402 Agent Payment Contract
-;; Handles escrow and settlement for agent-to-agent payments
-
-(define-map agent-balances principal uint)
-(define-map pending-payments 
-  { tx-id: (buff 32) } 
-  { sender: principal, recipient: principal, amount: uint, settled: bool })
-
-;; Deposit STX for agent payments
-(define-public (deposit (amount uint))
-  (begin
-    (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
-    (map-set agent-balances tx-sender 
-      (+ (default-to u0 (map-get? agent-balances tx-sender)) amount))
-    (ok amount)))
-
-;; Create payment with post-conditions
-(define-public (create-payment (recipient principal) (amount uint) (tx-id (buff 32)))
-  (let ((sender-balance (default-to u0 (map-get? agent-balances tx-sender))))
-    (asserts! (>= sender-balance amount) (err u1)) ;; Insufficient balance
-    (map-set pending-payments { tx-id: tx-id }
-      { sender: tx-sender, recipient: recipient, amount: amount, settled: false })
-    (ok tx-id)))
-
-;; Settle payment after service delivered
-(define-public (settle-payment (tx-id (buff 32)))
-  (let ((payment (unwrap! (map-get? pending-payments { tx-id: tx-id }) (err u2))))
-    (asserts! (is-eq (get settled payment) false) (err u3))
-    (try! (as-contract (stx-transfer? (get amount payment) tx-sender (get recipient payment))))
-    (map-set pending-payments { tx-id: tx-id } (merge payment { settled: true }))
-    (ok true)))</code></pre>
-      </div>
-      
-      <!-- Stacks Ecosystem -->
-      <div class="ecosystem-section">
-        <h3>🌐 Stacks Ecosystem Integration</h3>
-        <div class="ecosystem-grid">
-          <div class="ecosystem-item">
-            <img src="https://assets.website-files.com/618b0aafa4afde65f2fe38fe/61908d908d5fd82fdf53c5e0_alex.png" alt="ALEX" onerror="this.style.display='none'">
-            <span>ALEX DEX</span>
-            <small>Price feeds & swaps</small>
-          </div>
-          <div class="ecosystem-item">
-            <span style="font-size: 2rem;">🏛️</span>
-            <span>Arkadiko</span>
-            <small>USDA stablecoin</small>
-          </div>
-          <div class="ecosystem-item">
-            <span style="font-size: 2rem;">⚡</span>
-            <span>Velar</span>
-            <small>Perpetual DEX</small>
-          </div>
-          <div class="ecosystem-item">
-            <span style="font-size: 2rem;">🔮</span>
-            <span>Stacking</span>
-            <small>BTC yield agents</small>
-          </div>
-        </div>
-      </div>
-    </div>
     
-    <footer>
-      <p>Built for <a href="https://dorahacks.io/hackathon/x402-stacks" target="_blank">x402 Stacks Challenge</a> 🏆</p>
-      <p style="margin-top: 0.5rem;">
-        <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a> · 
-        <a href="index.html">Simple Demo</a> · 
-        Powered by <a href="https://stacks.co" target="_blank">Stacks</a>
-      </p>
-    </footer>
+    <!-- Quick Start -->
+    <section class="quickstart">
+      <h2>🚀 Quick Start</h2>
+      <div class="quickstart-grid">
+        <div class="quickstart-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Install the SDK</h3>
+            <p>Add x402/stacks to your agent project</p>
+            <code>npm install @x402/stacks @x402/stacks-fetch</code>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Configure Wallet</h3>
+            <p>Give your agent a Stacks wallet</p>
+            <code>const wallet = { privateKey: '...' };</code>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Call Paid Endpoints</h3>
+            <p>Auto-pay when you get HTTP 402</p>
+            <code>await x402Fetch('/gamma/floor-price');</code>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Clarity Contract Example -->
+    <section class="clarity-section">
+      <h3>📜 Clarity Smart Contract (Optional Escrow)</h3>
+      <pre><code>;; x402 Agent Payment Escrow - Secured by Bitcoin
+(define-public (pay-agent (recipient principal) (amount uint))
+  (begin
+    (try! (stx-transfer? amount tx-sender recipient))
+    (ok { recipient: recipient, amount: amount, settled: true })))
+
+;; Post-conditions ensure exact payment (Stacks-only feature)
+;; No reentrancy attacks possible in Clarity</code></pre>
+    </section>
+  </div>
+  
+  <footer>
+    <p>Built for <a href="https://dorahacks.io/hackathon/x402-stacks" target="_blank">x402 Stacks Challenge</a> 🏆</p>
+    <p>
+      <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a> · 
+      <a href="agent.html">Agent Console</a> · 
+      <a href="https://stacks.co" target="_blank">Stacks</a> · 
+      <a href="https://x402.org" target="_blank">x402 Protocol</a>
+    </p>
+  </footer>
 
   <script>
-    const API_URL = 'http://localhost:3000';
-    
-    // Mock agent data - Stacks ecosystem focused
+    // Agent data - Stacks ecosystem focused
     const agents = [
       {
-        id: 'gamma-nft',
         name: 'Gamma NFT Agent',
         icon: '🖼️',
         color: '#9b59b6',
-        category: 'data',
         badge: 'NFT INTEL',
-        rating: 4.9,
-        calls: '24.3K',
-        desc: 'Gamma marketplace analytics. Collection floor prices, rarity scores, whale tracking, and NFT valuations for Stacks NFTs.',
+        desc: 'Gamma marketplace analytics. Floor prices, rarity scores, whale tracking for Stacks NFTs.',
         endpoints: [
-          { method: 'POST', path: '/gamma/floor-price', price: '0.001', desc: 'Get collection floor price' },
-          { method: 'POST', path: '/gamma/rarity', price: '0.002', desc: 'Calculate NFT rarity score' },
-          { method: 'POST', path: '/gamma/whale-watch', price: '0.003', desc: 'Track whale wallet activity' },
-          { method: 'POST', path: '/gamma/trending', price: '0.001', desc: 'Trending collections on Gamma' },
-        ],
-        earnings: '412.5 STX'
+          { path: '/gamma/floor-price', price: '0.001 STX' },
+          { path: '/gamma/rarity', price: '0.002 STX' },
+          { path: '/gamma/whale-watch', price: '0.003 STX' },
+        ]
       },
       {
-        id: 'bns-agent',
-        name: 'BNS Name Agent',
-        icon: '🆔',
-        color: '#3498db',
-        category: 'data',
-        badge: '.BTC NAMES',
-        rating: 4.8,
-        calls: '15.2K',
-        desc: 'BNS (Bitcoin Name System) intelligence. Check name availability, valuations, expiration dates, and registration assistance.',
-        endpoints: [
-          { method: 'POST', path: '/bns/check', price: '0.0005', desc: 'Check if .btc name is available' },
-          { method: 'POST', path: '/bns/valuation', price: '0.002', desc: 'Estimate name market value' },
-          { method: 'POST', path: '/bns/expiring', price: '0.001', desc: 'Find expiring premium names' },
-          { method: 'POST', path: '/bns/history', price: '0.001', desc: 'Name ownership history' },
-        ],
-        earnings: '234.8 STX'
-      },
-      {
-        id: 'stacking-agent',
         name: 'Stacking Rewards Agent',
         icon: '📈',
         color: '#2ecc71',
-        category: 'oracle',
         badge: 'EARN BTC',
-        rating: 4.9,
-        calls: '31.4K',
-        desc: 'Stacking pool comparison and BTC rewards optimization. Compare Stacking DAO, Xverse pools, calculate rewards, and find best APY.',
+        desc: 'Stacking pool comparison and BTC rewards optimization. Find the best APY for your STX.',
         endpoints: [
-          { method: 'POST', path: '/stacking/pools', price: '0.001', desc: 'Compare all stacking pools' },
-          { method: 'POST', path: '/stacking/rewards-calc', price: '0.001', desc: 'Calculate expected BTC rewards' },
-          { method: 'POST', path: '/stacking/cycle-info', price: '0.0005', desc: 'Current cycle status & timing' },
-          { method: 'POST', path: '/stacking/optimize', price: '0.003', desc: 'Optimal stacking strategy' },
-        ],
-        earnings: '567.2 STX'
+          { path: '/stacking/pools', price: '0.001 STX' },
+          { path: '/stacking/rewards-calc', price: '0.001 STX' },
+          { path: '/stacking/optimize', price: '0.003 STX' },
+        ]
       },
       {
-        id: 'alex-dex',
         name: 'ALEX DEX Agent',
         icon: '🔄',
         color: '#e74c3c',
-        category: 'oracle',
         badge: 'DEX DATA',
-        rating: 4.8,
-        calls: '28.7K',
-        desc: 'ALEX DEX analytics and trading intelligence. Token prices, LP yields, swap routing, and arbitrage opportunities.',
+        desc: 'ALEX DEX analytics. Token prices, LP yields, optimal swap routing.',
         endpoints: [
-          { method: 'POST', path: '/alex/price', price: '0.001', desc: 'Token price on ALEX' },
-          { method: 'POST', path: '/alex/lp-yield', price: '0.002', desc: 'LP pool APY calculator' },
-          { method: 'POST', path: '/alex/swap-route', price: '0.001', desc: 'Optimal swap route' },
-          { method: 'POST', path: '/alex/volume', price: '0.001', desc: '24h trading volume' },
-        ],
-        earnings: '489.3 STX'
+          { path: '/alex/price', price: '0.001 STX' },
+          { path: '/alex/lp-yield', price: '0.002 STX' },
+          { path: '/alex/swap-route', price: '0.001 STX' },
+        ]
       },
       {
-        id: 'dao-agent',
-        name: 'StackerDAO Agent',
-        icon: '🏛️',
-        color: '#f39c12',
-        category: 'data',
-        badge: 'GOVERNANCE',
-        rating: 4.7,
-        calls: '8.9K',
-        desc: 'DAO proposal analysis and governance intelligence. Track votes, analyze proposals, calculate voting power across Stacks DAOs.',
+        name: 'BNS Name Agent',
+        icon: '🆔',
+        color: '#3498db',
+        badge: '.BTC NAMES',
+        desc: 'BNS (Bitcoin Name System) intelligence. Name availability, valuations, expiring premium names.',
         endpoints: [
-          { method: 'POST', path: '/dao/proposals', price: '0.001', desc: 'Active proposals list' },
-          { method: 'POST', path: '/dao/analyze', price: '0.003', desc: 'AI proposal analysis' },
-          { method: 'POST', path: '/dao/voting-power', price: '0.001', desc: 'Calculate voting power' },
-          { method: 'POST', path: '/dao/history', price: '0.002', desc: 'DAO voting history' },
-        ],
-        earnings: '145.6 STX'
+          { path: '/bns/check', price: '0.0005 STX' },
+          { path: '/bns/valuation', price: '0.002 STX' },
+          { path: '/bns/expiring', price: '0.001 STX' },
+        ]
       },
       {
-        id: 'clarity-agent',
         name: 'Clarity Code Agent',
         icon: '📜',
         color: '#1abc9c',
-        category: 'compute',
-        badge: 'CLARITY',
-        rating: 4.9,
-        calls: '12.1K',
-        desc: 'Clarity smart contract analysis. Security audits, gas optimization, code generation, and deployment assistance for Stacks contracts.',
+        badge: 'AUDITS',
+        desc: 'Clarity smart contract analysis. Security audits, gas optimization, code generation.',
         endpoints: [
-          { method: 'POST', path: '/clarity/audit', price: '0.01', desc: 'Full security audit' },
-          { method: 'POST', path: '/clarity/optimize', price: '0.005', desc: 'Gas optimization' },
-          { method: 'POST', path: '/clarity/generate', price: '0.008', desc: 'Generate contract code' },
-          { method: 'POST', path: '/clarity/explain', price: '0.002', desc: 'Explain contract logic' },
-        ],
-        earnings: '356.7 STX'
+          { path: '/clarity/audit', price: '0.01 STX' },
+          { path: '/clarity/optimize', price: '0.005 STX' },
+          { path: '/clarity/generate', price: '0.008 STX' },
+        ]
       },
       {
-        id: 'arkadiko-agent',
         name: 'Arkadiko Vault Agent',
         icon: '🏦',
         color: '#ff6600',
-        category: 'oracle',
         badge: 'USDA',
-        rating: 4.8,
-        calls: '9.4K',
-        desc: 'Arkadiko protocol intelligence. USDA stability, vault health monitoring, liquidation alerts, and collateral ratio optimization.',
+        desc: 'Arkadiko protocol intelligence. USDA stability, vault health, liquidation alerts.',
         endpoints: [
-          { method: 'POST', path: '/arkadiko/usda-rate', price: '0.001', desc: 'USDA/USD peg status' },
-          { method: 'POST', path: '/arkadiko/vault-health', price: '0.002', desc: 'Check vault health ratio' },
-          { method: 'POST', path: '/arkadiko/liquidation-risk', price: '0.002', desc: 'Liquidation risk alert' },
-          { method: 'POST', path: '/arkadiko/optimal-ratio', price: '0.003', desc: 'Optimal collateral ratio' },
-        ],
-        earnings: '198.4 STX'
+          { path: '/arkadiko/usda-rate', price: '0.001 STX' },
+          { path: '/arkadiko/vault-health', price: '0.002 STX' },
+          { path: '/arkadiko/liquidation-risk', price: '0.002 STX' },
+        ]
       },
     ];
-    
-    // Mock transactions
-    const mockTxs = [
-      { from: 'Buyer #4821', to: 'Oracle Agent', amount: '0.001', time: '2s ago', endpoint: '/oracle/btc-price' },
-      { from: 'TradingBot', to: 'Compute Agent', amount: '0.003', time: '5s ago', endpoint: '/compute/predict' },
-      { from: 'ResearchDAO', to: 'Research Agent', amount: '0.002', time: '12s ago', endpoint: '/intel/research' },
-      { from: 'Buyer #1337', to: 'Translator Agent', amount: '0.001', time: '18s ago', endpoint: '/translate/text' },
-      { from: 'DevAgent', to: 'Sentinel Agent', amount: '0.01', time: '25s ago', endpoint: '/audit/contract' },
-    ];
-    
-    let walletConnected = false;
-    let walletAddress = 'ST2W4FEZHSEECBGX52SNBWNR9HC596QF34RHQER3R';
-    let walletBalance = 500;
     
     // Render agents
-    function renderAgents(filter = 'all') {
-      const grid = document.getElementById('agents-grid');
-      const search = document.getElementById('search-input').value.toLowerCase();
-      
-      const filtered = agents.filter(a => {
-        if (filter !== 'all' && a.category !== filter) return false;
-        if (search && !a.name.toLowerCase().includes(search) && !a.desc.toLowerCase().includes(search)) return false;
-        return true;
-      });
-      
-      grid.innerHTML = filtered.map(agent => `
-        <div class="agent-card" onclick="openAgent('${agent.id}')">
-          <div class="agent-header">
-            <div class="agent-avatar" style="background: ${agent.color}20; color: ${agent.color}">
-              ${agent.icon}
+    const grid = document.getElementById('agents-grid');
+    grid.innerHTML = agents.map(agent => `
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background: ${agent.color}20; color: ${agent.color}">
+            ${agent.icon}
+          </div>
+          <div class="agent-info">
+            <div class="agent-name">${agent.name}</div>
+            <div class="agent-category">
+              <span class="agent-badge">${agent.badge}</span>
             </div>
-            <div class="agent-info">
-              <div class="agent-name">${agent.name}</div>
-              <div class="agent-category">
-                <span class="agent-badge">${agent.badge}</span>
-                <span>⭐ ${agent.rating}</span>
+          </div>
+        </div>
+        <div class="agent-body">
+          <p class="agent-desc">${agent.desc}</p>
+          <div class="endpoints-list">
+            ${agent.endpoints.map(e => `
+              <div class="endpoint-row">
+                <span class="endpoint-path">${e.path}</span>
+                <span class="endpoint-price">${e.price}</span>
               </div>
-            </div>
-            <div class="agent-stats">
-              <span>📞 ${agent.calls}</span>
-            </div>
-          </div>
-          <div class="agent-body">
-            <p class="agent-desc">${agent.desc}</p>
-            <div class="agent-endpoints">
-              ${agent.endpoints.slice(0, 3).map(e => `
-                <div class="endpoint-tag">
-                  <span>${e.path.split('/').pop()}</span>
-                  <span class="endpoint-price">${e.price} STX</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-          <div class="agent-footer">
-            <div class="agent-earnings">Earned: <strong>${agent.earnings}</strong></div>
-            <button class="use-agent-btn">Use Agent →</button>
+            `).join('')}
           </div>
         </div>
-      `).join('');
-    }
-    
-    // Render transactions
-    function renderTransactions() {
-      const list = document.getElementById('tx-list');
-      list.innerHTML = mockTxs.map(tx => `
-        <div class="tx-item">
-          <div class="tx-agents">
-            <span>${tx.from}</span>
-            <span class="tx-arrow">→</span>
-            <span>${tx.to}</span>
-          </div>
-          <div class="tx-amount">+${tx.amount} STX</div>
-          <div class="tx-time">${tx.time}</div>
-        </div>
-      `).join('');
-    }
-    
-    // Connect wallet
-    function connectWallet() {
-      walletConnected = !walletConnected;
-      const btn = document.getElementById('wallet-btn');
-      
-      if (walletConnected) {
-        btn.className = 'wallet-btn wallet-connected';
-        const networkLabel = currentNetwork === 'mainnet' ? '🟠' : '🧪';
-        btn.innerHTML = `${networkLabel} ${walletBalance.toFixed(2)} STX`;
-      } else {
-        btn.className = 'wallet-btn';
-        btn.innerHTML = '🔗 Connect Wallet';
-      }
-    }
-    
-    // Open agent modal
-    function openAgent(agentId) {
-      const agent = agents.find(a => a.id === agentId);
-      if (!agent) return;
-      
-      document.getElementById('modal-title').innerHTML = `${agent.icon} ${agent.name}`;
-      document.getElementById('modal-body').innerHTML = `
-        <p style="color: #888; margin-bottom: 1rem;">${agent.desc}</p>
-        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-          <div style="background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: 8px;">
-            ⭐ <strong>${agent.rating}</strong> Rating
-          </div>
-          <div style="background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: 8px;">
-            📞 <strong>${agent.calls}</strong> Calls
-          </div>
-          <div style="background: rgba(46,204,113,0.2); padding: 0.75rem 1rem; border-radius: 8px; color: #2ecc71;">
-            💰 <strong>${agent.earnings}</strong> Earned
-          </div>
-        </div>
-        <h3 style="margin-bottom: 1rem;">Available Endpoints</h3>
-        <div class="endpoint-list">
-          ${agent.endpoints.map((e, i) => `
-            <div class="endpoint-item" id="endpoint-${agentId}-${i}">
-              <h4>
-                <span><code>${e.method} ${e.path}</code></span>
-                <span class="endpoint-price" style="color: #f39c12;">${e.price} STX</span>
-              </h4>
-              <p>${e.desc}</p>
-              <button class="try-btn" onclick="tryEndpoint('${agentId}', ${i})" ${!walletConnected ? 'disabled title="Connect wallet first"' : ''}>
-                ${walletConnected ? '⚡ Call Endpoint' : '🔗 Connect Wallet First'}
-              </button>
-              <div class="result-box" id="result-${agentId}-${i}" style="display: none;"></div>
-            </div>
-          `).join('')}
-        </div>
-      `;
-      
-      document.getElementById('modal-overlay').classList.add('show');
-    }
-    
-    function closeModal(e) {
-      if (!e || e.target.id === 'modal-overlay') {
-        document.getElementById('modal-overlay').classList.remove('show');
-      }
-    }
-    
-    // Try endpoint (mock with real-looking data)
-    async function tryEndpoint(agentId, endpointIdx) {
-      const agent = agents.find(a => a.id === agentId);
-      const endpoint = agent.endpoints[endpointIdx];
-      const resultBox = document.getElementById(`result-${agentId}-${endpointIdx}`);
-      const btn = resultBox.previousElementSibling;
-      
-      btn.disabled = true;
-      btn.textContent = '⏳ Processing...';
-      resultBox.style.display = 'block';
-      resultBox.textContent = 'Signing transaction...';
-      
-      await new Promise(r => setTimeout(r, 500));
-      resultBox.textContent += '\nBroadcasting to Stacks testnet...';
-      
-      await new Promise(r => setTimeout(r, 800));
-      
-      // Generate mock response based on endpoint
-      const mockResponses = {
-        '/oracle/btc-price': { price: 97543.21, change24h: '+2.4%', volume: '$28.5B', timestamp: new Date().toISOString() },
-        '/oracle/stx-price': { price: 0.89, change24h: '+5.1%', marketCap: '$1.29B', timestamp: new Date().toISOString() },
-        '/intel/research': { summary: 'Analysis complete. Found 12 relevant sources...', confidence: 0.92, sources: 12 },
-        '/compute/predict': { predictions: [115.2, 118.4, 121.7], trend: 'bullish', confidence: 0.85 },
-        '/translate/text': { translation: '¡Hola Mundo!', sourceLang: 'en', targetLang: 'es' },
-        '/audit/contract': { vulnerabilities: 0, gasScore: 'A+', recommendation: 'Contract is secure' },
-      };
-      
-      const txId = Math.random().toString(16).slice(2, 18) + Math.random().toString(16).slice(2, 18);
-      const response = mockResponses[endpoint.path] || { status: 'success', data: 'Response data here' };
-      
-      // Update wallet balance
-      walletBalance -= parseFloat(endpoint.price);
-      document.getElementById('wallet-btn').innerHTML = `💰 ${walletBalance.toFixed(2)} STX`;
-      
-      // Add to transactions
-      mockTxs.unshift({
-        from: 'You',
-        to: agent.name,
-        amount: endpoint.price,
-        time: 'just now',
-        endpoint: endpoint.path
-      });
-      renderTransactions();
-      
-      resultBox.textContent = `✅ Payment Successful!
-TX: ${txId}
-Amount: -${endpoint.price} STX
-
-Response:
-${JSON.stringify(response, null, 2)}`;
-      
-      btn.textContent = '✅ Called';
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = '⚡ Call Endpoint';
-      }, 2000);
-    }
-    
-    // Filter buttons
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderAgents(btn.dataset.filter);
-      });
-    });
-    
-    // Search
-    document.getElementById('search-input').addEventListener('input', () => {
-      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-      renderAgents(activeFilter);
-    });
-    
-    // Add random transactions periodically
-    setInterval(() => {
-      const randomAgent = agents[Math.floor(Math.random() * agents.length)];
-      const randomEndpoint = randomAgent.endpoints[Math.floor(Math.random() * randomAgent.endpoints.length)];
-      mockTxs.unshift({
-        from: `Buyer #${Math.floor(Math.random() * 9000) + 1000}`,
-        to: randomAgent.name,
-        amount: randomEndpoint.price,
-        time: 'just now',
-        endpoint: randomEndpoint.path
-      });
-      if (mockTxs.length > 10) mockTxs.pop();
-      renderTransactions();
-    }, 5000);
-    
-    // Workflow templates - Stacks ecosystem focused
-    const workflowTemplates = {
-      nft: {
-        name: 'NFT Collection Analysis',
-        task: 'Analyze a Gamma NFT collection for floor price, rarity distribution, and whale activity',
-        steps: [
-          { agent: 'gamma-nft', endpoint: 0, desc: 'Get floor price' },
-          { agent: 'gamma-nft', endpoint: 1, desc: 'Calculate rarity scores' },
-          { agent: 'gamma-nft', endpoint: 2, desc: 'Track whale wallets' },
-          { agent: 'gamma-nft', endpoint: 3, desc: 'Check trending status' },
-        ]
-      },
-      stacking: {
-        name: 'Stacking Rewards Optimization',
-        task: 'Compare stacking pools, calculate BTC rewards, and find the best APY for my STX',
-        steps: [
-          { agent: 'stacking-agent', endpoint: 2, desc: 'Check cycle timing' },
-          { agent: 'stacking-agent', endpoint: 0, desc: 'Compare all pools' },
-          { agent: 'stacking-agent', endpoint: 1, desc: 'Calculate rewards' },
-          { agent: 'stacking-agent', endpoint: 3, desc: 'Get optimal strategy' },
-        ]
-      },
-      defi: {
-        name: 'DeFi Yield Analysis',
-        task: 'Analyze ALEX LP yields, Arkadiko vault health, and find best yield opportunities',
-        steps: [
-          { agent: 'alex-dex', endpoint: 0, desc: 'Get token prices' },
-          { agent: 'alex-dex', endpoint: 1, desc: 'Calculate LP yields' },
-          { agent: 'arkadiko-agent', endpoint: 0, desc: 'Check USDA stability' },
-          { agent: 'arkadiko-agent', endpoint: 3, desc: 'Optimal collateral ratio' },
-        ]
-      },
-      audit: {
-        name: 'Clarity Contract Audit',
-        task: 'Perform a full security audit on a Clarity smart contract with gas optimization',
-        steps: [
-          { agent: 'clarity-agent', endpoint: 3, desc: 'Explain contract logic' },
-          { agent: 'clarity-agent', endpoint: 0, desc: 'Full security audit' },
-          { agent: 'clarity-agent', endpoint: 1, desc: 'Gas optimization' },
-        ]
-      },
-      dao: {
-        name: 'DAO Proposal Analysis',
-        task: 'Analyze active DAO proposals, check voting power, and get AI recommendations',
-        steps: [
-          { agent: 'dao-agent', endpoint: 0, desc: 'List active proposals' },
-          { agent: 'dao-agent', endpoint: 1, desc: 'AI proposal analysis' },
-          { agent: 'dao-agent', endpoint: 2, desc: 'Calculate voting power' },
-        ]
-      },
-      bns: {
-        name: 'BNS Name Research',
-        task: 'Find valuable .btc names, check availability, and estimate market value',
-        steps: [
-          { agent: 'bns-agent', endpoint: 2, desc: 'Find expiring names' },
-          { agent: 'bns-agent', endpoint: 0, desc: 'Check availability' },
-          { agent: 'bns-agent', endpoint: 1, desc: 'Estimate value' },
-          { agent: 'bns-agent', endpoint: 3, desc: 'Check history' },
-        ]
-      }
-    };
-    
-    let currentWorkflow = null;
-    let currentNetwork = 'testnet';
-    
-    function setNetwork(network) {
-      currentNetwork = network;
-      document.getElementById('testnet-btn').classList.toggle('active', network === 'testnet');
-      document.getElementById('mainnet-btn').classList.toggle('active', network === 'mainnet');
-      
-      // Update wallet display
-      if (walletConnected) {
-        const btn = document.getElementById('wallet-btn');
-        const networkLabel = network === 'mainnet' ? '🟠' : '🧪';
-        btn.innerHTML = `${networkLabel} ${walletBalance.toFixed(2)} STX`;
-      }
-      
-      // Show notice for mainnet
-      if (network === 'mainnet') {
-        alert('⚠️ Mainnet mode selected!\n\nReal STX will be spent. Make sure you have mainnet STX in your wallet.\n\nFor demo purposes, we recommend using Testnet.');
-      }
-    }
-    
-    function openLaunchModal() {
-      document.getElementById('launch-modal').classList.add('show');
-      document.getElementById('workflow-preview').style.display = 'none';
-      document.getElementById('workflow-output').style.display = 'none';
-      document.getElementById('task-input').value = '';
-      document.getElementById('launch-workflow-btn').disabled = true;
-    }
-    
-    function closeLaunchModal(e) {
-      if (!e || e.target.id === 'launch-modal') {
-        document.getElementById('launch-modal').classList.remove('show');
-      }
-    }
-    
-    function setTemplate(templateId) {
-      const template = workflowTemplates[templateId];
-      if (!template) return;
-      
-      document.getElementById('task-input').value = template.task;
-      currentWorkflow = template;
-      showWorkflowPreview(template);
-    }
-    
-    function showWorkflowPreview(workflow) {
-      const preview = document.getElementById('workflow-preview');
-      const stepsEl = document.getElementById('workflow-steps');
-      const costEl = document.getElementById('workflow-cost');
-      const launchBtn = document.getElementById('launch-workflow-btn');
-      
-      let totalCost = 0;
-      
-      stepsEl.innerHTML = workflow.steps.map((step, i) => {
-        const agent = agents.find(a => a.id === step.agent);
-        const endpoint = agent.endpoints[step.endpoint];
-        totalCost += parseFloat(endpoint.price);
-        
-        return `
-          <div class="workflow-step" id="wf-step-${i}">
-            <div class="step-icon" style="background: ${agent.color}20; color: ${agent.color}">
-              ${agent.icon}
-            </div>
-            <div class="step-info">
-              <div class="step-agent">${agent.name}</div>
-              <div class="step-endpoint">${step.desc} → ${endpoint.path}</div>
-            </div>
-            <div class="step-price">${endpoint.price} STX</div>
-            <div class="step-status" id="wf-status-${i}"></div>
-          </div>
-        `;
-      }).join('');
-      
-      costEl.textContent = totalCost.toFixed(3);
-      preview.style.display = 'block';
-      launchBtn.disabled = false;
-    }
-    
-    // Listen to task input
-    document.getElementById('task-input').addEventListener('input', (e) => {
-      const task = e.target.value.trim().toLowerCase();
-      
-      // Auto-detect template based on Stacks ecosystem keywords
-      if (task.includes('nft') || task.includes('gamma') || task.includes('collection') || task.includes('rarity')) {
-        currentWorkflow = workflowTemplates.nft;
-        showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('stacking') || task.includes('btc reward') || task.includes('pool') || task.includes('apy')) {
-        currentWorkflow = workflowTemplates.stacking;
-        showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('alex') || task.includes('swap') || task.includes('lp') || task.includes('yield') || task.includes('defi')) {
-        currentWorkflow = workflowTemplates.defi;
-        showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('audit') || task.includes('clarity') || task.includes('security') || task.includes('contract')) {
-        currentWorkflow = workflowTemplates.audit;
-        showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('dao') || task.includes('proposal') || task.includes('vote') || task.includes('governance')) {
-        currentWorkflow = workflowTemplates.dao;
-        showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('bns') || task.includes('.btc') || task.includes('name') || task.includes('domain')) {
-        currentWorkflow = workflowTemplates.bns;
-        showWorkflowPreview(currentWorkflow);
-      } else if (task.length > 20) {
-        // Default to stacking for Stacks-related queries
-        currentWorkflow = workflowTemplates.stacking;
-        showWorkflowPreview(currentWorkflow);
-      }
-    });
-    
-    async function launchWorkflow() {
-      if (!currentWorkflow) return;
-      
-      const launchBtn = document.getElementById('launch-workflow-btn');
-      const outputDiv = document.getElementById('workflow-output');
-      const logDiv = document.getElementById('workflow-log');
-      
-      launchBtn.disabled = true;
-      launchBtn.textContent = '⏳ Running Workflow...';
-      outputDiv.style.display = 'block';
-      logDiv.innerHTML = '';
-      
-      const log = (msg, color = '#fff') => {
-        logDiv.innerHTML += `<div style="color: ${color}; margin-bottom: 0.5rem;">${new Date().toLocaleTimeString()} | ${msg}</div>`;
-        logDiv.scrollTop = logDiv.scrollHeight;
-      };
-      
-      log('🚀 Starting workflow: ' + currentWorkflow.name, '#9b59b6');
-      log('Network: ' + (currentNetwork === 'mainnet' ? '🟠 MAINNET (Real STX!)' : '🧪 TESTNET'), currentNetwork === 'mainnet' ? '#ff6600' : '#2ecc71');
-      log('─'.repeat(50), '#333');
-      
-      let totalSpent = 0;
-      const results = [];
-      
-      for (let i = 0; i < currentWorkflow.steps.length; i++) {
-        const step = currentWorkflow.steps[i];
-        const agent = agents.find(a => a.id === step.agent);
-        const endpoint = agent.endpoints[step.endpoint];
-        
-        // Update status
-        document.getElementById(`wf-status-${i}`).className = 'step-status running';
-        document.getElementById(`wf-status-${i}`).innerHTML = '◌';
-        
-        log(`Step ${i + 1}/${currentWorkflow.steps.length}: ${step.desc}`, '#3498db');
-        log(`  → Calling ${agent.name}: ${endpoint.path}`, '#888');
-        
-        await new Promise(r => setTimeout(r, 300));
-        
-        // Sign and broadcast payment
-        log(`  → Signing ${currentNetwork} payment (${endpoint.price} STX)...`, '#f39c12');
-        await new Promise(r => setTimeout(r, 400));
-        
-        // Try to call the API
-        try {
-          const res = await fetch(`${API_URL}${endpoint.path}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ demo: true, network: currentNetwork })
-          });
-          
-          if (res.status === 402) {
-            log(`  → Broadcasting to Stacks ${currentNetwork}...`, '#888');
-          }
-        } catch (e) {
-          log(`  → Using mock response (API offline)`, '#888');
-        }
-        
-        await new Promise(r => setTimeout(r, 600));
-        
-        // Generate mock result
-        const mockResults = {
-          'gamma-nft': { floor: '125 STX', volume24h: '2,450 STX', holders: 342, listed: 45 },
-          'bns-agent': { available: true, estimatedValue: '50-100 STX', premium: false },
-          'stacking-agent': { bestPool: 'Stacking DAO', apy: '8.2%', nextCycle: '3 days', btcReward: '0.00012 BTC' },
-          'alex-dex': { price: 0.42, lpApy: '24.5%', volume24h: '1.2M STX', route: 'STX→ALEX' },
-          'dao-agent': { activeProposals: 3, recommendation: 'Vote YES', votingPower: '1,250 STX' },
-          'clarity-agent': { vulnerabilities: 0, gasScore: 'A+', secure: true, linesAnalyzed: 245 },
-          'arkadiko-agent': { usdaRate: 1.001, vaultHealth: 'Healthy', ratio: 185, risk: 'Low' },
-        };
-        
-        const result = mockResults[step.agent];
-        results.push({ step: step.desc, result });
-        
-        const txId = Math.random().toString(16).slice(2, 18) + Math.random().toString(16).slice(2, 10);
-        totalSpent += parseFloat(endpoint.price);
-        
-        log(`  ✅ Complete! TX: ${txId.substring(0, 12)}...`, '#2ecc71');
-        
-        // Update UI
-        document.getElementById(`wf-status-${i}`).className = 'step-status done';
-        document.getElementById(`wf-status-${i}`).innerHTML = '✓';
-        
-        // Update wallet
-        walletBalance -= parseFloat(endpoint.price);
-        document.getElementById('wallet-btn').innerHTML = `💰 ${walletBalance.toFixed(2)} STX`;
-        
-        // Add to transaction feed
-        mockTxs.unshift({
-          from: 'Your Agent',
-          to: agent.name,
-          amount: endpoint.price,
-          time: 'just now',
-          endpoint: endpoint.path
-        });
-        renderTransactions();
-        
-        await new Promise(r => setTimeout(r, 300));
-      }
-      
-      log('─'.repeat(50), '#333');
-      log(`🎉 Workflow complete!`, '#2ecc71');
-      log(`💸 Total spent: ${totalSpent.toFixed(3)} STX`, '#f39c12');
-      log('');
-      log('📊 Results Summary:', '#9b59b6');
-      results.forEach(r => {
-        log(`  • ${r.step}: ${JSON.stringify(r.result)}`, '#888');
-      });
-      
-      launchBtn.textContent = '✅ Workflow Complete!';
-      setTimeout(() => {
-        launchBtn.disabled = false;
-        launchBtn.textContent = '⚡ Launch Workflow';
-      }, 3000);
-    }
-    
-    // Initial render
-    renderAgents();
-    renderTransactions();
-    
-    // Auto-connect wallet for demo
-    setTimeout(() => {
-      connectWallet();
-    }, 1000);
+      </div>
+    `).join('');
   </script>
 </body>
 </html>
