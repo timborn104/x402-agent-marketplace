@@ -47,21 +47,28 @@ export async function createPaymentPayload(
   const senderAddress = wallet.address ?? getAddressFromPrivateKey(wallet.privateKey);
 
   // Get nonce if not provided
-  let nonce = options?.nonce;
-  if (nonce === undefined) {
-    const nonceValue = await fetchNonce({ address: senderAddress, network });
-    nonce = Number(nonceValue);
+  let nonce: bigint;
+  if (options?.nonce !== undefined) {
+    nonce = BigInt(options.nonce);
+  } else {
+    nonce = await fetchNonce({ address: senderAddress, network });
   }
 
   // Create the STX transfer transaction
-  const transaction = await makeSTXTokenTransfer({
+  const txOptions: Parameters<typeof makeSTXTokenTransfer>[0] = {
     recipient: requirement.recipient,
     amount: BigInt(requirement.amount),
     senderKey: wallet.privateKey,
     network,
-    nonce: BigInt(nonce),
-    fee: options?.fee ? BigInt(options.fee) : undefined,
-  });
+    nonce,
+  };
+  
+  // Only add fee if explicitly provided
+  if (options?.fee) {
+    txOptions.fee = BigInt(options.fee);
+  }
+  
+  const transaction = await makeSTXTokenTransfer(txOptions);
   
   // Serialize the transaction
   const serializedTx = Buffer.from(serializeTransaction(transaction)).toString('hex');
@@ -83,7 +90,7 @@ export async function createPaymentPayload(
     recipient: requirement.recipient,
     amount: requirement.amount,
     asset: 'STX',
-    nonce,
+    nonce: Number(nonce),
     signature,
     publicKey,
     serializedTx,
@@ -97,8 +104,8 @@ export function getWalletAddress(
   privateKey: string,
   network: 'mainnet' | 'testnet' = 'testnet'
 ): string {
-  // getAddressFromPrivateKey infers the version from the key
-  return getAddressFromPrivateKey(privateKey);
+  const stacksNetwork = network === 'mainnet' ? STACKS_MAINNET : STACKS_TESTNET;
+  return getAddressFromPrivateKey(privateKey, stacksNetwork);
 }
 
 /**
