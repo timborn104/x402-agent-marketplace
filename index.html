@@ -164,6 +164,127 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
+    
+    /* How It Works Section */
+    .how-it-works {
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .how-it-works h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(90deg, #3498db, #9b59b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .how-it-works h3 {
+      color: #f39c12;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .protocol-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 900px) {
+      .protocol-flow { grid-template-columns: 1fr 1fr; }
+      .agents { grid-template-columns: 1fr; }
+      .payment-flow { flex-direction: row; padding: 1rem 0; }
+    }
+    .step {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .step-number {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+    .step h3 { margin-top: 0.5rem; font-size: 1rem; }
+    .step p { color: #888; font-size: 0.85rem; line-height: 1.5; }
+    .step code {
+      background: rgba(0,0,0,0.3);
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      color: #3498db;
+    }
+    
+    .tech-stack, .why-section, .code-example {
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .tech-grid, .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 600px) {
+      .tech-grid, .why-grid { grid-template-columns: 1fr; }
+    }
+    .tech-item, .why-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+    }
+    .tech-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .tech-item p, .why-item p {
+      color: #888;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+    
+    .code-example pre {
+      background: #0d0d0d;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .code-example code {
+      color: #e0e0e0;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 3rem 0 2rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: #f39c12;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -241,6 +362,119 @@
         Transaction log will appear here...
       </div>
     </div>
+    
+    <!-- How It Works Section -->
+    <div class="how-it-works">
+      <h2>🔧 How It Works</h2>
+      
+      <div class="protocol-flow">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>🔍 Discovery</h3>
+            <p>Buyer agent calls <code>GET /services</code> to discover available paid endpoints and their prices.</p>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>📤 Request</h3>
+            <p>Buyer sends request to paid endpoint. Server responds with <code>HTTP 402 Payment Required</code> and includes payment details in <code>X-Payment-Required</code> header.</p>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>✍️ Sign & Pay</h3>
+            <p>Buyer creates an STX transfer transaction, signs it with their private key, and encodes it in the <code>X-Payment</code> header.</p>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>✅ Verify & Settle</h3>
+            <p>Server verifies the payment, broadcasts the transaction to Stacks blockchain, and returns <code>HTTP 200</code> with the response data.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tech-stack">
+        <h3>🛠️ Technology Stack</h3>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <span class="tech-icon">⚡</span>
+            <div>
+              <strong>x402 Protocol</strong>
+              <p>HTTP-native payments using status code 402</p>
+            </div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">🟠</span>
+            <div>
+              <strong>Stacks (STX)</strong>
+              <p>Bitcoin L2 with smart contracts</p>
+            </div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">🤖</span>
+            <div>
+              <strong>AI Agents</strong>
+              <p>Autonomous agents with crypto wallets</p>
+            </div>
+          </div>
+          <div class="tech-item">
+            <span class="tech-icon">📦</span>
+            <div>
+              <strong>NPM Packages</strong>
+              <p>@x402/stacks, @x402/stacks-express, @x402/stacks-fetch</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="code-example">
+        <h3>💻 Code Example</h3>
+        <pre><code>// Server: Add paid endpoint with one line
+app.use(paymentMiddleware({
+  'POST /oracle/btc-price': { price: '0.001' }
+}, { recipientAddress: 'ST1...' }));
+
+// Client: Auto-pay with x402Fetch
+const data = await x402Fetch('/oracle/btc-price', {
+  wallet: { privateKey: '...' }
+});</code></pre>
+      </div>
+      
+      <div class="why-section">
+        <h3>🚀 Why Agent-to-Agent Payments?</h3>
+        <div class="why-grid">
+          <div class="why-item">
+            <strong>💰 Monetize AI Services</strong>
+            <p>Agents can sell their specialized capabilities to other agents</p>
+          </div>
+          <div class="why-item">
+            <strong>🔗 Composable Economy</strong>
+            <p>Build complex workflows by chaining paid agent services</p>
+          </div>
+          <div class="why-item">
+            <strong>🔐 Trustless Payments</strong>
+            <p>No accounts needed - just cryptographic signatures on blockchain</p>
+          </div>
+          <div class="why-item">
+            <strong>⚡ HTTP Native</strong>
+            <p>Works with any HTTP client - no special SDKs required</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>Built for <a href="https://dorahacks.io/hackathon/x402-stacks" target="_blank">x402 Stacks Challenge</a> 🏆</p>
+      <p><a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a> · <a href="https://explorer.stacks.co/?chain=testnet" target="_blank">Stacks Explorer</a></p>
+    </footer>
   </div>
 
   <script>
