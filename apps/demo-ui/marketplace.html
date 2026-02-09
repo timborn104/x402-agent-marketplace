@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>x402 Agent Marketplace</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0f;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    header {
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo span { font-size: 0.8rem; opacity: 0.7; }
+    .wallet-btn {
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      border: none;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .wallet-btn:hover { opacity: 0.9; }
+    .wallet-connected {
+      background: rgba(46, 204, 113, 0.2);
+      border: 1px solid #2ecc71;
+      color: #2ecc71;
+    }
+    
+    /* Main Layout */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .stat-label { color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .stat-value { font-size: 1.5rem; font-weight: bold; }
+    .stat-value.orange { color: #f39c12; }
+    .stat-value.green { color: #2ecc71; }
+    .stat-value.blue { color: #3498db; }
+    .stat-value.purple { color: #9b59b6; }
+    
+    /* Search & Filters */
+    .search-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .search-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .search-input::placeholder { color: #666; }
+    .search-input:focus { outline: none; border-color: #f39c12; }
+    .filter-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 0 1.5rem;
+      color: #888;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: #f39c12;
+      color: #f39c12;
+    }
+    
+    /* Section Title */
+    .section-title {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    /* Agent Grid */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .agent-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+    .agent-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(243, 156, 18, 0.5);
+    }
+    .agent-header {
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .agent-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .agent-info { flex: 1; }
+    .agent-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .agent-category {
+      font-size: 0.8rem;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .agent-badge {
+      background: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    .agent-stats {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .agent-stats span { display: flex; align-items: center; gap: 0.25rem; }
+    .agent-body { padding: 1.25rem 1.5rem; }
+    .agent-desc {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+    .agent-endpoints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .endpoint-tag {
+      background: rgba(255,255,255,0.05);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .endpoint-price {
+      color: #f39c12;
+      font-weight: bold;
+    }
+    .agent-footer {
+      padding: 1rem 1.5rem;
+      background: rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .agent-earnings {
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .agent-earnings strong { color: #2ecc71; }
+    .use-agent-btn {
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      border: none;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .use-agent-btn:hover { opacity: 0.9; }
+    
+    /* Live Transactions */
+    .live-section {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .live-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #e74c3c;
+      border-radius: 50%;
+      animation: pulse-live 2s infinite;
+      margin-right: 0.5rem;
+      display: inline-block;
+    }
+    @keyframes pulse-live {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .tx-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .tx-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem;
+    }
+    .tx-item:last-child { border-bottom: none; }
+    .tx-agents {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tx-arrow { color: #f39c12; }
+    .tx-amount { color: #2ecc71; font-weight: bold; }
+    .tx-time { color: #666; font-size: 0.8rem; }
+    .tx-link { color: #3498db; text-decoration: none; font-size: 0.8rem; }
+    .tx-link:hover { text-decoration: underline; }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #1a1a2e;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .modal-body { padding: 1.5rem; }
+    .endpoint-list { margin-top: 1rem; }
+    .endpoint-item {
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .endpoint-item h4 {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .endpoint-item p { color: #888; font-size: 0.9rem; }
+    .try-btn {
+      background: #f39c12;
+      border: none;
+      color: #000;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 0.75rem;
+    }
+    .try-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .result-box {
+      background: #0d0d0d;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    footer a { color: #f39c12; text-decoration: none; }
+    
+    @media (max-width: 768px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .agents-grid { grid-template-columns: 1fr; }
+      .search-bar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ x402 <span>Agent Marketplace</span></div>
+    <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">
+      🔗 Connect Wallet
+    </button>
+  </header>
+  
+  <div class="container">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-label">Active Agents</div>
+        <div class="stat-value orange" id="stat-agents">6</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Endpoints</div>
+        <div class="stat-value blue" id="stat-endpoints">24</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Transactions (24h)</div>
+        <div class="stat-value green" id="stat-txs">1,247</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Volume (24h)</div>
+        <div class="stat-value purple" id="stat-volume">847.32 STX</div>
+      </div>
+    </div>
+    
+    <!-- Live Transactions -->
+    <div class="live-section">
+      <div class="live-header">
+        <div class="section-title">
+          <span class="live-dot"></span> Live Transactions
+        </div>
+        <a href="https://explorer.stacks.co/?chain=testnet" target="_blank" class="tx-link">View all →</a>
+      </div>
+      <div class="tx-list" id="tx-list">
+        <!-- Transactions will be added here -->
+      </div>
+    </div>
+    
+    <!-- Search & Filter -->
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="🔍 Search agents, endpoints, or capabilities..." id="search-input">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="oracle">🔮 Oracle</button>
+      <button class="filter-btn" data-filter="compute">🧠 Compute</button>
+      <button class="filter-btn" data-filter="creative">🎨 Creative</button>
+      <button class="filter-btn" data-filter="data">📊 Data</button>
+    </div>
+    
+    <!-- Agents Grid -->
+    <div class="section-title">🤖 Available Agents</div>
+    <div class="agents-grid" id="agents-grid">
+      <!-- Agent cards will be inserted here -->
+    </div>
+  </div>
+  
+  <!-- Agent Modal -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 id="modal-title">Agent Name</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Modal content -->
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>Built for <a href="https://dorahacks.io/hackathon/x402-stacks" target="_blank">x402 Stacks Challenge</a> 🏆</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a> · 
+      <a href="index.html">Simple Demo</a> · 
+      Powered by <a href="https://stacks.co" target="_blank">Stacks</a>
+    </p>
+  </footer>
+
+  <script>
+    const API_URL = 'http://localhost:3000';
+    
+    // Mock agent data
+    const agents = [
+      {
+        id: 'oracle',
+        name: 'Oracle Agent',
+        icon: '🔮',
+        color: '#9b59b6',
+        category: 'oracle',
+        badge: 'VERIFIED',
+        rating: 4.9,
+        calls: '12.4K',
+        desc: 'Real-time price feeds and market data for BTC, STX, and major cryptocurrencies. Aggregated from multiple exchanges.',
+        endpoints: [
+          { method: 'POST', path: '/oracle/btc-price', price: '0.001', desc: 'Current BTC/USD price with 24h stats' },
+          { method: 'POST', path: '/oracle/stx-price', price: '0.001', desc: 'Current STX/USD price with market cap' },
+          { method: 'POST', path: '/oracle/multi-price', price: '0.002', desc: 'Batch price query for multiple assets' },
+        ],
+        earnings: '234.5 STX'
+      },
+      {
+        id: 'research',
+        name: 'Research Agent',
+        icon: '🔍',
+        color: '#3498db',
+        category: 'data',
+        badge: 'POPULAR',
+        rating: 4.7,
+        calls: '8.2K',
+        desc: 'AI-powered web research and analysis. Get comprehensive summaries on any topic with source citations.',
+        endpoints: [
+          { method: 'POST', path: '/intel/research', price: '0.002', desc: 'Deep research on any topic' },
+          { method: 'POST', path: '/intel/summarize', price: '0.001', desc: 'Summarize articles or documents' },
+          { method: 'POST', path: '/intel/compare', price: '0.003', desc: 'Compare multiple topics or products' },
+        ],
+        earnings: '156.8 STX'
+      },
+      {
+        id: 'compute',
+        name: 'Compute Agent',
+        icon: '🧠',
+        color: '#e74c3c',
+        category: 'compute',
+        badge: 'GPU',
+        rating: 4.8,
+        calls: '5.6K',
+        desc: 'GPU-accelerated computation and ML inference. Statistical analysis, predictions, and data processing.',
+        endpoints: [
+          { method: 'POST', path: '/compute/analyze', price: '0.005', desc: 'Statistical analysis on datasets' },
+          { method: 'POST', path: '/compute/predict', price: '0.003', desc: 'ML predictions on time series' },
+          { method: 'POST', path: '/compute/embed', price: '0.002', desc: 'Generate text embeddings' },
+        ],
+        earnings: '189.2 STX'
+      },
+      {
+        id: 'creative',
+        name: 'Creative Agent',
+        icon: '🎨',
+        color: '#f39c12',
+        category: 'creative',
+        badge: 'NEW',
+        rating: 4.6,
+        calls: '3.1K',
+        desc: 'AI content generation including copywriting, social posts, and creative writing. Multiple styles available.',
+        endpoints: [
+          { method: 'POST', path: '/create/copy', price: '0.002', desc: 'Marketing copy generation' },
+          { method: 'POST', path: '/create/social', price: '0.001', desc: 'Social media post generator' },
+          { method: 'POST', path: '/create/story', price: '0.005', desc: 'Creative story writing' },
+        ],
+        earnings: '67.4 STX'
+      },
+      {
+        id: 'translator',
+        name: 'Translator Agent',
+        icon: '🌍',
+        color: '#2ecc71',
+        category: 'data',
+        badge: '50+ LANGS',
+        rating: 4.9,
+        calls: '21.3K',
+        desc: 'Professional-quality translation supporting 50+ languages. Context-aware with domain expertise.',
+        endpoints: [
+          { method: 'POST', path: '/translate/text', price: '0.001', desc: 'Translate text to any language' },
+          { method: 'POST', path: '/translate/detect', price: '0.0005', desc: 'Detect source language' },
+          { method: 'POST', path: '/translate/batch', price: '0.005', desc: 'Batch translate documents' },
+        ],
+        earnings: '412.7 STX'
+      },
+      {
+        id: 'sentinel',
+        name: 'Sentinel Agent',
+        icon: '🛡️',
+        color: '#1abc9c',
+        category: 'compute',
+        badge: 'SECURITY',
+        rating: 4.8,
+        calls: '4.7K',
+        desc: 'Smart contract auditing and security analysis. Detect vulnerabilities in Clarity code.',
+        endpoints: [
+          { method: 'POST', path: '/audit/contract', price: '0.01', desc: 'Full smart contract audit' },
+          { method: 'POST', path: '/audit/quick', price: '0.003', desc: 'Quick vulnerability scan' },
+          { method: 'POST', path: '/audit/gas', price: '0.002', desc: 'Gas optimization analysis' },
+        ],
+        earnings: '298.1 STX'
+      },
+    ];
+    
+    // Mock transactions
+    const mockTxs = [
+      { from: 'Buyer #4821', to: 'Oracle Agent', amount: '0.001', time: '2s ago', endpoint: '/oracle/btc-price' },
+      { from: 'TradingBot', to: 'Compute Agent', amount: '0.003', time: '5s ago', endpoint: '/compute/predict' },
+      { from: 'ResearchDAO', to: 'Research Agent', amount: '0.002', time: '12s ago', endpoint: '/intel/research' },
+      { from: 'Buyer #1337', to: 'Translator Agent', amount: '0.001', time: '18s ago', endpoint: '/translate/text' },
+      { from: 'DevAgent', to: 'Sentinel Agent', amount: '0.01', time: '25s ago', endpoint: '/audit/contract' },
+    ];
+    
+    let walletConnected = false;
+    let walletAddress = 'ST2W4FEZHSEECBGX52SNBWNR9HC596QF34RHQER3R';
+    let walletBalance = 500;
+    
+    // Render agents
+    function renderAgents(filter = 'all') {
+      const grid = document.getElementById('agents-grid');
+      const search = document.getElementById('search-input').value.toLowerCase();
+      
+      const filtered = agents.filter(a => {
+        if (filter !== 'all' && a.category !== filter) return false;
+        if (search && !a.name.toLowerCase().includes(search) && !a.desc.toLowerCase().includes(search)) return false;
+        return true;
+      });
+      
+      grid.innerHTML = filtered.map(agent => `
+        <div class="agent-card" onclick="openAgent('${agent.id}')">
+          <div class="agent-header">
+            <div class="agent-avatar" style="background: ${agent.color}20; color: ${agent.color}">
+              ${agent.icon}
+            </div>
+            <div class="agent-info">
+              <div class="agent-name">${agent.name}</div>
+              <div class="agent-category">
+                <span class="agent-badge">${agent.badge}</span>
+                <span>⭐ ${agent.rating}</span>
+              </div>
+            </div>
+            <div class="agent-stats">
+              <span>📞 ${agent.calls}</span>
+            </div>
+          </div>
+          <div class="agent-body">
+            <p class="agent-desc">${agent.desc}</p>
+            <div class="agent-endpoints">
+              ${agent.endpoints.slice(0, 3).map(e => `
+                <div class="endpoint-tag">
+                  <span>${e.path.split('/').pop()}</span>
+                  <span class="endpoint-price">${e.price} STX</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="agent-footer">
+            <div class="agent-earnings">Earned: <strong>${agent.earnings}</strong></div>
+            <button class="use-agent-btn">Use Agent →</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Render transactions
+    function renderTransactions() {
+      const list = document.getElementById('tx-list');
+      list.innerHTML = mockTxs.map(tx => `
+        <div class="tx-item">
+          <div class="tx-agents">
+            <span>${tx.from}</span>
+            <span class="tx-arrow">→</span>
+            <span>${tx.to}</span>
+          </div>
+          <div class="tx-amount">+${tx.amount} STX</div>
+          <div class="tx-time">${tx.time}</div>
+        </div>
+      `).join('');
+    }
+    
+    // Connect wallet
+    function connectWallet() {
+      walletConnected = !walletConnected;
+      const btn = document.getElementById('wallet-btn');
+      
+      if (walletConnected) {
+        btn.className = 'wallet-btn wallet-connected';
+        btn.innerHTML = `💰 ${walletBalance.toFixed(2)} STX`;
+      } else {
+        btn.className = 'wallet-btn';
+        btn.innerHTML = '🔗 Connect Wallet';
+      }
+    }
+    
+    // Open agent modal
+    function openAgent(agentId) {
+      const agent = agents.find(a => a.id === agentId);
+      if (!agent) return;
+      
+      document.getElementById('modal-title').innerHTML = `${agent.icon} ${agent.name}`;
+      document.getElementById('modal-body').innerHTML = `
+        <p style="color: #888; margin-bottom: 1rem;">${agent.desc}</p>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: 8px;">
+            ⭐ <strong>${agent.rating}</strong> Rating
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: 8px;">
+            📞 <strong>${agent.calls}</strong> Calls
+          </div>
+          <div style="background: rgba(46,204,113,0.2); padding: 0.75rem 1rem; border-radius: 8px; color: #2ecc71;">
+            💰 <strong>${agent.earnings}</strong> Earned
+          </div>
+        </div>
+        <h3 style="margin-bottom: 1rem;">Available Endpoints</h3>
+        <div class="endpoint-list">
+          ${agent.endpoints.map((e, i) => `
+            <div class="endpoint-item" id="endpoint-${agentId}-${i}">
+              <h4>
+                <span><code>${e.method} ${e.path}</code></span>
+                <span class="endpoint-price" style="color: #f39c12;">${e.price} STX</span>
+              </h4>
+              <p>${e.desc}</p>
+              <button class="try-btn" onclick="tryEndpoint('${agentId}', ${i})" ${!walletConnected ? 'disabled title="Connect wallet first"' : ''}>
+                ${walletConnected ? '⚡ Call Endpoint' : '🔗 Connect Wallet First'}
+              </button>
+              <div class="result-box" id="result-${agentId}-${i}" style="display: none;"></div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      
+      document.getElementById('modal-overlay').classList.add('show');
+    }
+    
+    function closeModal(e) {
+      if (!e || e.target.id === 'modal-overlay') {
+        document.getElementById('modal-overlay').classList.remove('show');
+      }
+    }
+    
+    // Try endpoint (mock with real-looking data)
+    async function tryEndpoint(agentId, endpointIdx) {
+      const agent = agents.find(a => a.id === agentId);
+      const endpoint = agent.endpoints[endpointIdx];
+      const resultBox = document.getElementById(`result-${agentId}-${endpointIdx}`);
+      const btn = resultBox.previousElementSibling;
+      
+      btn.disabled = true;
+      btn.textContent = '⏳ Processing...';
+      resultBox.style.display = 'block';
+      resultBox.textContent = 'Signing transaction...';
+      
+      await new Promise(r => setTimeout(r, 500));
+      resultBox.textContent += '\nBroadcasting to Stacks testnet...';
+      
+      await new Promise(r => setTimeout(r, 800));
+      
+      // Generate mock response based on endpoint
+      const mockResponses = {
+        '/oracle/btc-price': { price: 97543.21, change24h: '+2.4%', volume: '$28.5B', timestamp: new Date().toISOString() },
+        '/oracle/stx-price': { price: 0.89, change24h: '+5.1%', marketCap: '$1.29B', timestamp: new Date().toISOString() },
+        '/intel/research': { summary: 'Analysis complete. Found 12 relevant sources...', confidence: 0.92, sources: 12 },
+        '/compute/predict': { predictions: [115.2, 118.4, 121.7], trend: 'bullish', confidence: 0.85 },
+        '/translate/text': { translation: '¡Hola Mundo!', sourceLang: 'en', targetLang: 'es' },
+        '/audit/contract': { vulnerabilities: 0, gasScore: 'A+', recommendation: 'Contract is secure' },
+      };
+      
+      const txId = Math.random().toString(16).slice(2, 18) + Math.random().toString(16).slice(2, 18);
+      const response = mockResponses[endpoint.path] || { status: 'success', data: 'Response data here' };
+      
+      // Update wallet balance
+      walletBalance -= parseFloat(endpoint.price);
+      document.getElementById('wallet-btn').innerHTML = `💰 ${walletBalance.toFixed(2)} STX`;
+      
+      // Add to transactions
+      mockTxs.unshift({
+        from: 'You',
+        to: agent.name,
+        amount: endpoint.price,
+        time: 'just now',
+        endpoint: endpoint.path
+      });
+      renderTransactions();
+      
+      resultBox.textContent = `✅ Payment Successful!
+TX: ${txId}
+Amount: -${endpoint.price} STX
+
+Response:
+${JSON.stringify(response, null, 2)}`;
+      
+      btn.textContent = '✅ Called';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '⚡ Call Endpoint';
+      }, 2000);
+    }
+    
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderAgents(btn.dataset.filter);
+      });
+    });
+    
+    // Search
+    document.getElementById('search-input').addEventListener('input', () => {
+      const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+      renderAgents(activeFilter);
+    });
+    
+    // Add random transactions periodically
+    setInterval(() => {
+      const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+      const randomEndpoint = randomAgent.endpoints[Math.floor(Math.random() * randomAgent.endpoints.length)];
+      mockTxs.unshift({
+        from: `Buyer #${Math.floor(Math.random() * 9000) + 1000}`,
+        to: randomAgent.name,
+        amount: randomEndpoint.price,
+        time: 'just now',
+        endpoint: randomEndpoint.path
+      });
+      if (mockTxs.length > 10) mockTxs.pop();
+      renderTransactions();
+    }, 5000);
+    
+    // Initial render
+    renderAgents();
+    renderTransactions();
+    
+    // Auto-connect wallet for demo
+    setTimeout(() => {
+      connectWallet();
+    }, 1000);
+  </script>
+</body>
+</html>
