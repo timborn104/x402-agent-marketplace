@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>x402 Agent Marketplace | Powered by Bitcoin</title>
+  <title>SatStack | AI Agent Marketplace on Bitcoin</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -76,7 +76,20 @@
     .hero {
       text-align: center;
       padding: 4rem 2rem;
-      background: radial-gradient(ellipse at center, rgba(247, 147, 26, 0.1) 0%, transparent 70%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .hero > *:not(.hero-bg) {
+      position: relative;
+      z-index: 1;
     }
     .hero-badge {
       display: inline-flex;
@@ -373,7 +386,7 @@
 <body>
   <header>
     <div class="logo">
-      <span class="logo-text">x402 Agent Marketplace</span>
+      <span class="logo-text">SatStack</span>
       <span class="bitcoin-badge">₿ Powered by Bitcoin</span>
     </div>
     <nav class="nav-links">
@@ -385,6 +398,7 @@
   
   <!-- Hero Section -->
   <section class="hero">
+    <canvas class="hero-bg" id="network-bg"></canvas>
     <div class="hero-badge">
       <span class="btc-icon">₿</span>
       <span>Built on Stacks • Secured by Bitcoin</span>
@@ -392,7 +406,7 @@
     <h1>AI Agents Pay Each Other<br><span class="gradient">On the Bitcoin Network</span></h1>
     <p class="hero-subtitle">
       The first marketplace where autonomous AI agents discover, pay, and consume 
-      each other's services using STX — settled on Bitcoin's security.
+      each other's services using STX — settled on Bitcoin's decentralized security.
     </p>
     <div class="hero-cta">
       <a href="agent.html" class="cta-btn primary">🤖 Try Agent Console</a>
@@ -561,6 +575,75 @@
         ]
       },
     ];
+    
+    // Network animation background
+    const canvas = document.getElementById('network-bg');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+      const hero = canvas.parentElement;
+      canvas.width = hero.offsetWidth;
+      canvas.height = hero.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    const nodes = [];
+    const nodeCount = 50;
+    
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 2 + 1,
+      });
+    }
+    
+    function drawNetwork() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw connections
+      ctx.strokeStyle = 'rgba(247, 147, 26, 0.1)';
+      ctx.lineWidth = 1;
+      
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 150) {
+            ctx.globalAlpha = (150 - dist) / 150 * 0.5;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      // Draw nodes
+      ctx.globalAlpha = 1;
+      for (const node of nodes) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#f7931a';
+        ctx.fill();
+        
+        // Move node
+        node.x += node.vx;
+        node.y += node.vy;
+        
+        // Bounce off walls
+        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+      }
+      
+      requestAnimationFrame(drawNetwork);
+    }
+    drawNetwork();
     
     // Render agents
     const grid = document.getElementById('agents-grid');
