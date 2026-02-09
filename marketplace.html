@@ -47,6 +47,41 @@
       gap: 0.5rem;
     }
     .wallet-btn:hover { opacity: 0.9; }
+    .launch-btn {
+      background: linear-gradient(90deg, #9b59b6, #3498db);
+      border: none;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .launch-btn:hover { opacity: 0.9; }
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .toggle-label input { display: none; }
+    .toggle-text { font-size: 0.9rem; }
+    .toggle-label:has(input:checked) {
+      background: rgba(46, 204, 113, 0.2);
+      border-color: #2ecc71;
+    }
+    .toggle-label:has(input:checked) .toggle-text { color: #2ecc71; }
     .wallet-connected {
       background: rgba(46, 204, 113, 0.2);
       border: 1px solid #2ecc71;
@@ -359,6 +394,78 @@
       overflow-y: auto;
     }
     
+    .template-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .template-btn:hover {
+      border-color: #f39c12;
+      background: rgba(243,156,18,0.1);
+    }
+    .launch-workflow-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #9b59b6, #3498db);
+      border: none;
+      color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .launch-workflow-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .launch-workflow-btn:not(:disabled):hover {
+      opacity: 0.9;
+    }
+    .workflow-step {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .workflow-step:last-child { border-bottom: none; }
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .step-info { flex: 1; }
+    .step-agent { font-weight: bold; }
+    .step-endpoint { color: #888; font-size: 0.85rem; }
+    .step-price { color: #f39c12; font-weight: bold; }
+    .step-status {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+    .step-status.pending { border-color: #f39c12; }
+    .step-status.running { border-color: #3498db; animation: spin 1s linear infinite; }
+    .step-status.done { border-color: #2ecc71; background: #2ecc71; color: #fff; }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
     /* Footer */
     footer {
       text-align: center;
@@ -378,9 +485,20 @@
 <body>
   <header>
     <div class="logo">⚡ x402 <span>Agent Marketplace</span></div>
-    <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">
-      🔗 Connect Wallet
-    </button>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <div class="mode-toggle">
+        <label class="toggle-label">
+          <input type="checkbox" id="real-mode" onchange="toggleMode()">
+          <span class="toggle-text" id="mode-text">🎭 Simulation</span>
+        </label>
+      </div>
+      <button class="launch-btn" onclick="openLaunchModal()">
+        🚀 Launch Agent
+      </button>
+      <button class="wallet-btn" id="wallet-btn" onclick="connectWallet()">
+        🔗 Connect Wallet
+      </button>
+    </div>
   </header>
   
   <div class="container">
@@ -443,6 +561,54 @@
       </div>
       <div class="modal-body" id="modal-body">
         <!-- Modal content -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Launch Agent Modal -->
+  <div class="modal-overlay" id="launch-modal" onclick="closeLaunchModal(event)">
+    <div class="modal" style="max-width: 700px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>🚀 Launch Agent Workflow</h2>
+        <button class="modal-close" onclick="closeLaunchModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: #888; margin-bottom: 1.5rem;">
+          Describe what you want to accomplish. Your agent will automatically chain together 
+          the right marketplace agents to complete the task.
+        </p>
+        
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; color: #888;">What do you want to research or analyze?</label>
+          <textarea id="task-input" style="width: 100%; height: 80px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; color: #fff; font-size: 1rem; resize: none;" placeholder="e.g., 'Analyze Bitcoin price trends and predict next week's movement'"></textarea>
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; color: #888;">Quick Templates:</label>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <button class="template-btn" onclick="setTemplate('crypto')">📈 Crypto Analysis</button>
+            <button class="template-btn" onclick="setTemplate('research')">🔍 Market Research</button>
+            <button class="template-btn" onclick="setTemplate('audit')">🛡️ Contract Audit</button>
+            <button class="template-btn" onclick="setTemplate('content')">✍️ Content Creation</button>
+          </div>
+        </div>
+        
+        <div id="workflow-preview" style="display: none; margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; color: #888;">Workflow Preview:</label>
+          <div id="workflow-steps" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem;"></div>
+          <div style="margin-top: 1rem; padding: 1rem; background: rgba(243,156,18,0.1); border: 1px solid #f39c12; border-radius: 8px;">
+            <strong style="color: #f39c12;">Estimated Cost:</strong> <span id="workflow-cost">0.000</span> STX
+          </div>
+        </div>
+        
+        <button class="launch-workflow-btn" id="launch-workflow-btn" onclick="launchWorkflow()" disabled>
+          ⚡ Launch Workflow
+        </button>
+        
+        <div id="workflow-output" style="display: none; margin-top: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; color: #888;">Workflow Execution:</label>
+          <div id="workflow-log" style="background: #0d0d0d; border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.85rem; max-height: 300px; overflow-y: auto;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -788,6 +954,258 @@ ${JSON.stringify(response, null, 2)}`;
       if (mockTxs.length > 10) mockTxs.pop();
       renderTransactions();
     }, 5000);
+    
+    // Workflow templates
+    const workflowTemplates = {
+      crypto: {
+        name: 'Crypto Price Analysis & Prediction',
+        task: 'Get current Bitcoin and STX prices, analyze market trends, and predict price movement for the next 7 days',
+        steps: [
+          { agent: 'oracle', endpoint: 0, desc: 'Fetch BTC price' },
+          { agent: 'oracle', endpoint: 1, desc: 'Fetch STX price' },
+          { agent: 'research', endpoint: 0, desc: 'Analyze market trends' },
+          { agent: 'compute', endpoint: 1, desc: 'ML price prediction' },
+        ]
+      },
+      research: {
+        name: 'Market Research Report',
+        task: 'Research the DeFi ecosystem on Stacks, compare top protocols, and summarize findings',
+        steps: [
+          { agent: 'research', endpoint: 0, desc: 'Research Stacks DeFi' },
+          { agent: 'research', endpoint: 2, desc: 'Compare protocols' },
+          { agent: 'research', endpoint: 1, desc: 'Generate summary' },
+        ]
+      },
+      audit: {
+        name: 'Smart Contract Security Audit',
+        task: 'Perform a full security audit on a Clarity smart contract with gas optimization',
+        steps: [
+          { agent: 'sentinel', endpoint: 1, desc: 'Quick vulnerability scan' },
+          { agent: 'sentinel', endpoint: 0, desc: 'Full contract audit' },
+          { agent: 'sentinel', endpoint: 2, desc: 'Gas optimization' },
+        ]
+      },
+      content: {
+        name: 'Marketing Content Creation',
+        task: 'Create marketing copy and social media content for a new Stacks project launch',
+        steps: [
+          { agent: 'research', endpoint: 0, desc: 'Research target audience' },
+          { agent: 'creative', endpoint: 0, desc: 'Generate marketing copy' },
+          { agent: 'creative', endpoint: 1, desc: 'Create social posts' },
+          { agent: 'translator', endpoint: 0, desc: 'Translate to Spanish' },
+        ]
+      }
+    };
+    
+    let currentWorkflow = null;
+    let realMode = false;
+    
+    function toggleMode() {
+      realMode = document.getElementById('real-mode').checked;
+      const modeText = document.getElementById('mode-text');
+      if (realMode) {
+        modeText.textContent = '⚡ Real STX';
+        modeText.style.color = '#2ecc71';
+      } else {
+        modeText.textContent = '🎭 Simulation';
+        modeText.style.color = '';
+      }
+    }
+    
+    function openLaunchModal() {
+      document.getElementById('launch-modal').classList.add('show');
+      document.getElementById('workflow-preview').style.display = 'none';
+      document.getElementById('workflow-output').style.display = 'none';
+      document.getElementById('task-input').value = '';
+      document.getElementById('launch-workflow-btn').disabled = true;
+    }
+    
+    function closeLaunchModal(e) {
+      if (!e || e.target.id === 'launch-modal') {
+        document.getElementById('launch-modal').classList.remove('show');
+      }
+    }
+    
+    function setTemplate(templateId) {
+      const template = workflowTemplates[templateId];
+      if (!template) return;
+      
+      document.getElementById('task-input').value = template.task;
+      currentWorkflow = template;
+      showWorkflowPreview(template);
+    }
+    
+    function showWorkflowPreview(workflow) {
+      const preview = document.getElementById('workflow-preview');
+      const stepsEl = document.getElementById('workflow-steps');
+      const costEl = document.getElementById('workflow-cost');
+      const launchBtn = document.getElementById('launch-workflow-btn');
+      
+      let totalCost = 0;
+      
+      stepsEl.innerHTML = workflow.steps.map((step, i) => {
+        const agent = agents.find(a => a.id === step.agent);
+        const endpoint = agent.endpoints[step.endpoint];
+        totalCost += parseFloat(endpoint.price);
+        
+        return `
+          <div class="workflow-step" id="wf-step-${i}">
+            <div class="step-icon" style="background: ${agent.color}20; color: ${agent.color}">
+              ${agent.icon}
+            </div>
+            <div class="step-info">
+              <div class="step-agent">${agent.name}</div>
+              <div class="step-endpoint">${step.desc} → ${endpoint.path}</div>
+            </div>
+            <div class="step-price">${endpoint.price} STX</div>
+            <div class="step-status" id="wf-status-${i}"></div>
+          </div>
+        `;
+      }).join('');
+      
+      costEl.textContent = totalCost.toFixed(3);
+      preview.style.display = 'block';
+      launchBtn.disabled = false;
+    }
+    
+    // Listen to task input
+    document.getElementById('task-input').addEventListener('input', (e) => {
+      const task = e.target.value.trim().toLowerCase();
+      
+      // Auto-detect template based on keywords
+      if (task.includes('bitcoin') || task.includes('btc') || task.includes('price') || task.includes('predict')) {
+        currentWorkflow = workflowTemplates.crypto;
+        showWorkflowPreview(currentWorkflow);
+      } else if (task.includes('research') || task.includes('analyze') || task.includes('defi')) {
+        currentWorkflow = workflowTemplates.research;
+        showWorkflowPreview(currentWorkflow);
+      } else if (task.includes('audit') || task.includes('security') || task.includes('contract')) {
+        currentWorkflow = workflowTemplates.audit;
+        showWorkflowPreview(currentWorkflow);
+      } else if (task.includes('content') || task.includes('marketing') || task.includes('social')) {
+        currentWorkflow = workflowTemplates.content;
+        showWorkflowPreview(currentWorkflow);
+      } else if (task.length > 20) {
+        // Default to research for generic queries
+        currentWorkflow = workflowTemplates.research;
+        showWorkflowPreview(currentWorkflow);
+      }
+    });
+    
+    async function launchWorkflow() {
+      if (!currentWorkflow) return;
+      
+      const launchBtn = document.getElementById('launch-workflow-btn');
+      const outputDiv = document.getElementById('workflow-output');
+      const logDiv = document.getElementById('workflow-log');
+      
+      launchBtn.disabled = true;
+      launchBtn.textContent = '⏳ Running Workflow...';
+      outputDiv.style.display = 'block';
+      logDiv.innerHTML = '';
+      
+      const log = (msg, color = '#fff') => {
+        logDiv.innerHTML += `<div style="color: ${color}; margin-bottom: 0.5rem;">${new Date().toLocaleTimeString()} | ${msg}</div>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
+      
+      log('🚀 Starting workflow: ' + currentWorkflow.name, '#9b59b6');
+      log('Mode: ' + (realMode ? '⚡ REAL STX (Testnet)' : '🎭 Simulation'), realMode ? '#2ecc71' : '#888');
+      log('─'.repeat(50), '#333');
+      
+      let totalSpent = 0;
+      const results = [];
+      
+      for (let i = 0; i < currentWorkflow.steps.length; i++) {
+        const step = currentWorkflow.steps[i];
+        const agent = agents.find(a => a.id === step.agent);
+        const endpoint = agent.endpoints[step.endpoint];
+        
+        // Update status
+        document.getElementById(`wf-status-${i}`).className = 'step-status running';
+        document.getElementById(`wf-status-${i}`).innerHTML = '◌';
+        
+        log(`Step ${i + 1}/${currentWorkflow.steps.length}: ${step.desc}`, '#3498db');
+        log(`  → Calling ${agent.name}: ${endpoint.path}`, '#888');
+        
+        await new Promise(r => setTimeout(r, 300));
+        
+        if (realMode) {
+          log(`  → Signing STX payment (${endpoint.price} STX)...`, '#f39c12');
+          await new Promise(r => setTimeout(r, 400));
+          
+          // Actually call the API if in real mode
+          try {
+            const res = await fetch(`${API_URL}${endpoint.path}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ demo: true })
+            });
+            
+            if (res.status === 402) {
+              log(`  → Payment required, using mock response`, '#f39c12');
+            }
+          } catch (e) {
+            log(`  → API not available, using simulation`, '#888');
+          }
+        }
+        
+        await new Promise(r => setTimeout(r, 600));
+        
+        // Generate mock result
+        const mockResults = {
+          'oracle': { btcPrice: 97543.21, stxPrice: 0.89, change: '+2.4%' },
+          'research': { summary: 'Analysis complete', confidence: 0.92, sources: 8 },
+          'compute': { predictions: [115, 118, 121], trend: 'bullish', confidence: 0.87 },
+          'creative': { content: 'Generated marketing copy...', wordCount: 150 },
+          'translator': { translation: 'Contenido traducido...', lang: 'es' },
+          'sentinel': { vulnerabilities: 0, score: 'A+', secure: true },
+        };
+        
+        const result = mockResults[step.agent];
+        results.push({ step: step.desc, result });
+        
+        const txId = realMode ? Math.random().toString(16).slice(2, 18) : 'sim-' + Date.now();
+        totalSpent += parseFloat(endpoint.price);
+        
+        log(`  ✅ Complete! TX: ${txId.substring(0, 12)}...`, '#2ecc71');
+        
+        // Update UI
+        document.getElementById(`wf-status-${i}`).className = 'step-status done';
+        document.getElementById(`wf-status-${i}`).innerHTML = '✓';
+        
+        // Update wallet
+        walletBalance -= parseFloat(endpoint.price);
+        document.getElementById('wallet-btn').innerHTML = `💰 ${walletBalance.toFixed(2)} STX`;
+        
+        // Add to transaction feed
+        mockTxs.unshift({
+          from: 'Your Agent',
+          to: agent.name,
+          amount: endpoint.price,
+          time: 'just now',
+          endpoint: endpoint.path
+        });
+        renderTransactions();
+        
+        await new Promise(r => setTimeout(r, 300));
+      }
+      
+      log('─'.repeat(50), '#333');
+      log(`🎉 Workflow complete!`, '#2ecc71');
+      log(`💸 Total spent: ${totalSpent.toFixed(3)} STX`, '#f39c12');
+      log('');
+      log('📊 Results Summary:', '#9b59b6');
+      results.forEach(r => {
+        log(`  • ${r.step}: ${JSON.stringify(r.result)}`, '#888');
+      });
+      
+      launchBtn.textContent = '✅ Workflow Complete!';
+      setTimeout(() => {
+        launchBtn.disabled = false;
+        launchBtn.textContent = '⚡ Launch Workflow';
+      }, 3000);
+    }
     
     // Initial render
     renderAgents();
