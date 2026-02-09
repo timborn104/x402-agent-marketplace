@@ -1,0 +1,29 @@
+{
+  "name": "x402-agent-marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agent-to-agent payment protocol using x402 and Stacks blockchain",
+  "author": "JARVIS CLAW <jarvis@openclaw.ai>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timborn/x402-agent-marketplace"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

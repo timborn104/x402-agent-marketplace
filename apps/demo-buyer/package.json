@@ -1,0 +1,24 @@
+{
+  "name": "demo-buyer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Demo buyer agent that pays for AI services",
+  "main": "./dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@x402/stacks": "*",
+    "@x402/stacks-fetch": "*",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0"
+  }
+}
