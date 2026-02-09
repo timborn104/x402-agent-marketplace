@@ -4,27 +4,34 @@
 
 🏆 **Built for x402 Stacks Challenge** — DoraHacks Hackathon Feb 2026
 
+🌐 **[Live Demo](https://timborn104.github.io/x402-agent-marketplace/)**
+
 ## What is this?
 
 A protocol that lets AI agents pay each other for services. No accounts. No API keys. Just HTTP + crypto.
 
 ```
-Agent A (Translation Bot):
-  POST /translate → 0.001 STX per request
+Agent A (Buyer):
+  "I need BTC price data"
   
-Agent B (Research Bot):
-  - Calls /translate
-  - Gets HTTP 402 "Payment Required"  
-  - Auto-signs STX payment
-  - Gets translation result ✅
+Agent B (Oracle):
+  POST /oracle/btc-price → 0.001 STX
+  
+Flow:
+  1. Agent A calls /oracle/btc-price
+  2. Gets HTTP 402 "Payment Required"  
+  3. Auto-signs STX payment
+  4. Gets BTC price data ✅
 ```
 
 ## Quick Start
 
-### 1. Install dependencies
+### 1. Clone & Install
 
 ```bash
-pnpm install
+git clone https://github.com/timborn104/x402-agent-marketplace.git
+cd x402-agent-marketplace
+npm install
 ```
 
 ### 2. Set up wallets
@@ -32,40 +39,66 @@ pnpm install
 Create `.env` file in the root:
 
 ```env
-# Seller wallet (receives payments)
-SELLER_ADDRESS=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-SELLER_PRIVATE_KEY=your_seller_private_key
-
-# Buyer wallet (makes payments)  
-BUYER_PRIVATE_KEY=your_buyer_private_key
-
 # Network
 NETWORK=testnet
+
+# Seller Agent (Oracle) - receives payments
+SELLER_ADDRESS=ST1SQD3VHD3F9PXGMXD5APF441H24SGX4JZHMJJ6R
+SELLER_PRIVATE_KEY=734a10993a85a42d1682fb5a6cde406aa2ed7568319ba0a34b79b88cbb103cdc
+
+# Buyer Agent - has ~500 STX on testnet
+BUYER_ADDRESS=ST2W4FEZHSEECBGX52SNBWNR9HC596QF34RHQER3R
+BUYER_PRIVATE_KEY=48b2a6498ee3e4722ff63f47f5d4e4a73dfaafcab0a570a24f24764ad5689e3a
+
+# Server
+PORT=3000
+SELLER_URL=http://localhost:3000
 ```
 
-Get testnet STX: https://explorer.stacks.co/sandbox/faucet?chain=testnet
+> 💡 These are pre-funded testnet wallets. For production, generate your own keys!
 
-### 3. Build everything
+### 3. Build & Run
 
 ```bash
-pnpm build
+npm run build
+node run-demo.mjs
 ```
 
-### 4. Run the demo
+That's it! You'll see 3 real STX payments happen on Stacks testnet. 🚀
 
-Terminal 1 - Start the seller:
+### Alternative: Run Separately
+
+**Terminal 1** - Start the Oracle Agent:
 ```bash
-cd apps/demo-seller
-pnpm start
+node apps/demo-seller/dist/index.js
 ```
 
-Terminal 2 - Run the buyer:
+**Terminal 2** - Run the Buyer Agent:
 ```bash
-cd apps/demo-buyer
-pnpm start
+node apps/demo-buyer/dist/index.js
 ```
 
-Watch the buyer discover services and pay for them automatically!
+### Web UI
+
+```bash
+# Start the Oracle Agent
+node apps/demo-seller/dist/index.js
+
+# In another terminal, serve the UI
+npx serve apps/demo-ui -p 8080
+
+# Open http://localhost:8080
+```
+
+## Paid Endpoints
+
+| Endpoint | Price | Description |
+|----------|-------|-------------|
+| `POST /oracle/btc-price` | 0.001 STX | Real-time BTC price |
+| `POST /oracle/stx-price` | 0.001 STX | Real-time STX price |
+| `POST /intel/research` | 0.002 STX | AI-powered research |
+| `POST /compute/analyze` | 0.005 STX | GPU data analysis |
+| `POST /compute/predict` | 0.003 STX | ML predictions |
 
 ## Packages
 
@@ -98,8 +131,8 @@ Express middleware for accepting payments.
 import { paymentMiddleware } from '@x402/stacks-express';
 
 app.use(paymentMiddleware({
-  'POST /summarize': { price: '0.001', description: 'Summarize text' },
-  'POST /translate': { price: '0.001', description: 'Translate text' },
+  'POST /oracle/btc-price': { price: '0.001', description: 'BTC price' },
+  'POST /intel/research': { price: '0.002', description: 'AI research' },
 }, {
   recipientAddress: 'ST1234...',
   network: { type: 'testnet' },
@@ -118,9 +151,8 @@ const x402Fetch = createX402Fetch({
 });
 
 // Automatically pays if endpoint returns 402
-const response = await x402Fetch('https://api.example.com/translate', {
+const response = await x402Fetch('https://oracle.example.com/btc-price', {
   method: 'POST',
-  body: JSON.stringify({ text: 'Hello' }),
 });
 ```
 
@@ -132,7 +164,7 @@ const response = await x402Fetch('https://api.example.com/translate', {
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  ┌──────────────┐         HTTP 402         ┌──────────────────┐ │
-│  │ Buyer Agent  │ ──────────────────────▶  │  Seller Agent    │ │
+│  │ Buyer Agent  │ ──────────────────────▶  │  Oracle Agent    │ │
 │  │ (Client)     │ ◀────────────────────── │  (Server)        │ │
 │  │              │   PaymentRequired        │                  │ │
 │  └──────────────┘                          └──────────────────┘ │
@@ -147,68 +179,40 @@ const response = await x402Fetch('https://api.example.com/translate', {
 │                        ▼                                         │
 │              ┌──────────────────┐                               │
 │              │  Stacks Network  │                               │
-│              │   (STX + SIP-10) │                               │
+│              │   (Testnet)      │                               │
 │              └──────────────────┘                               │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ## How it Works
 
-1. **Buyer agent** sends HTTP request to Seller agent
-2. **Seller** responds with `402 Payment Required` + payment details in header
-3. **Buyer** signs STX payment using private key
-4. **Buyer** retries request with `X-Payment` header containing signed payment
-5. **Seller** verifies signature and amount
-6. **Seller** broadcasts transaction to Stacks network
-7. **Seller** returns the requested resource
+1. **Buyer agent** sends HTTP request to Oracle agent
+2. **Oracle** responds with `402 Payment Required` + payment details in header
+3. **Buyer** signs STX transfer using private key
+4. **Buyer** retries request with `X-Payment` header containing signed transaction
+5. **Oracle** verifies signature and amount
+6. **Oracle** broadcasts transaction to Stacks testnet
+7. **Oracle** returns the requested data (BTC price, research, etc.)
 
-## API Reference
+## Demo Transactions
 
-### Payment Requirement (402 Response Header)
-
-```json
-{
-  "scheme": "exact",
-  "network": "stacks",
-  "chainId": 2147483648,
-  "recipient": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  "amount": "1000",
-  "asset": "STX",
-  "description": "Summarize text"
-}
-```
-
-### Payment Payload (Request Header)
-
-```json
-{
-  "scheme": "exact",
-  "network": "stacks",
-  "chainId": 2147483648,
-  "recipient": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  "amount": "1000",
-  "asset": "STX",
-  "nonce": 42,
-  "signature": "...",
-  "publicKey": "...",
-  "serializedTx": "..."
-}
-```
+View real transactions on Stacks Explorer:
+- https://explorer.stacks.co/?chain=testnet
 
 ## Tech Stack
 
 - **TypeScript** - Type-safe development
-- **pnpm** - Fast, disk-efficient package manager
-- **Stacks.js** - Stacks blockchain SDK
+- **npm workspaces** - Monorepo management
+- **Stacks.js v7** - Stacks blockchain SDK
 - **Express** - HTTP server framework
 - **x402** - Open payment protocol
 
 ## Resources
 
 - [x402 Protocol](https://x402.org)
-- [x402 Documentation](https://docs.x402.org)
 - [Stacks Documentation](https://docs.stacks.co)
 - [Stacks Testnet Faucet](https://explorer.stacks.co/sandbox/faucet?chain=testnet)
+- [Stacks Explorer](https://explorer.stacks.co/?chain=testnet)
 
 ## License
 
