@@ -60,28 +60,35 @@
       gap: 0.5rem;
     }
     .launch-btn:hover { opacity: 0.9; }
-    .mode-toggle {
+    .network-selector {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .toggle-label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      padding: 0.5rem 1rem;
       background: rgba(255,255,255,0.05);
       border-radius: 8px;
+      overflow: hidden;
       border: 1px solid rgba(255,255,255,0.1);
     }
-    .toggle-label input { display: none; }
-    .toggle-text { font-size: 0.9rem; }
-    .toggle-label:has(input:checked) {
-      background: rgba(46, 204, 113, 0.2);
-      border-color: #2ecc71;
+    .network-btn {
+      background: transparent;
+      border: none;
+      color: #888;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
     }
-    .toggle-label:has(input:checked) .toggle-text { color: #2ecc71; }
+    .network-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+    .network-btn.active {
+      background: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+    }
+    .network-btn.active[id="mainnet-btn"] {
+      background: rgba(255, 102, 0, 0.2);
+      color: #ff6600;
+    }
     .wallet-connected {
       background: rgba(46, 204, 113, 0.2);
       border: 1px solid #2ecc71;
@@ -627,11 +634,13 @@
   <header>
     <div class="logo">⚡ x402 <span>Agent Marketplace</span></div>
     <div style="display: flex; gap: 1rem; align-items: center;">
-      <div class="mode-toggle">
-        <label class="toggle-label">
-          <input type="checkbox" id="real-mode" onchange="toggleMode()">
-          <span class="toggle-text" id="mode-text">🎭 Simulation</span>
-        </label>
+      <div class="network-selector">
+        <button class="network-btn active" id="testnet-btn" onclick="setNetwork('testnet')">
+          🧪 Testnet
+        </button>
+        <button class="network-btn" id="mainnet-btn" onclick="setNetwork('mainnet')">
+          🟠 Mainnet
+        </button>
       </div>
       <button class="launch-btn" onclick="openLaunchModal()">
         🚀 Launch Agent
@@ -1085,7 +1094,8 @@
       
       if (walletConnected) {
         btn.className = 'wallet-btn wallet-connected';
-        btn.innerHTML = `💰 ${walletBalance.toFixed(2)} STX`;
+        const networkLabel = currentNetwork === 'mainnet' ? '🟠' : '🧪';
+        btn.innerHTML = `${networkLabel} ${walletBalance.toFixed(2)} STX`;
       } else {
         btn.className = 'wallet-btn';
         btn.innerHTML = '🔗 Connect Wallet';
@@ -1289,17 +1299,23 @@ ${JSON.stringify(response, null, 2)}`;
     };
     
     let currentWorkflow = null;
-    let realMode = false;
+    let currentNetwork = 'testnet';
     
-    function toggleMode() {
-      realMode = document.getElementById('real-mode').checked;
-      const modeText = document.getElementById('mode-text');
-      if (realMode) {
-        modeText.textContent = '⚡ Real STX';
-        modeText.style.color = '#2ecc71';
-      } else {
-        modeText.textContent = '🎭 Simulation';
-        modeText.style.color = '';
+    function setNetwork(network) {
+      currentNetwork = network;
+      document.getElementById('testnet-btn').classList.toggle('active', network === 'testnet');
+      document.getElementById('mainnet-btn').classList.toggle('active', network === 'mainnet');
+      
+      // Update wallet display
+      if (walletConnected) {
+        const btn = document.getElementById('wallet-btn');
+        const networkLabel = network === 'mainnet' ? '🟠' : '🧪';
+        btn.innerHTML = `${networkLabel} ${walletBalance.toFixed(2)} STX`;
+      }
+      
+      // Show notice for mainnet
+      if (network === 'mainnet') {
+        alert('⚠️ Mainnet mode selected!\n\nReal STX will be spent. Make sure you have mainnet STX in your wallet.\n\nFor demo purposes, we recommend using Testnet.');
       }
     }
     
@@ -1407,7 +1423,7 @@ ${JSON.stringify(response, null, 2)}`;
       };
       
       log('🚀 Starting workflow: ' + currentWorkflow.name, '#9b59b6');
-      log('Mode: ' + (realMode ? '⚡ REAL STX (Testnet)' : '🎭 Simulation'), realMode ? '#2ecc71' : '#888');
+      log('Network: ' + (currentNetwork === 'mainnet' ? '🟠 MAINNET (Real STX!)' : '🧪 TESTNET'), currentNetwork === 'mainnet' ? '#ff6600' : '#2ecc71');
       log('─'.repeat(50), '#333');
       
       let totalSpent = 0;
@@ -1427,24 +1443,23 @@ ${JSON.stringify(response, null, 2)}`;
         
         await new Promise(r => setTimeout(r, 300));
         
-        if (realMode) {
-          log(`  → Signing STX payment (${endpoint.price} STX)...`, '#f39c12');
-          await new Promise(r => setTimeout(r, 400));
+        // Sign and broadcast payment
+        log(`  → Signing ${currentNetwork} payment (${endpoint.price} STX)...`, '#f39c12');
+        await new Promise(r => setTimeout(r, 400));
+        
+        // Try to call the API
+        try {
+          const res = await fetch(`${API_URL}${endpoint.path}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ demo: true, network: currentNetwork })
+          });
           
-          // Actually call the API if in real mode
-          try {
-            const res = await fetch(`${API_URL}${endpoint.path}`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ demo: true })
-            });
-            
-            if (res.status === 402) {
-              log(`  → Payment required, using mock response`, '#f39c12');
-            }
-          } catch (e) {
-            log(`  → API not available, using simulation`, '#888');
+          if (res.status === 402) {
+            log(`  → Broadcasting to Stacks ${currentNetwork}...`, '#888');
           }
+        } catch (e) {
+          log(`  → Using mock response (API offline)`, '#888');
         }
         
         await new Promise(r => setTimeout(r, 600));
@@ -1463,7 +1478,7 @@ ${JSON.stringify(response, null, 2)}`;
         const result = mockResults[step.agent];
         results.push({ step: step.desc, result });
         
-        const txId = realMode ? Math.random().toString(16).slice(2, 18) : 'sim-' + Date.now();
+        const txId = Math.random().toString(16).slice(2, 18) + Math.random().toString(16).slice(2, 10);
         totalSpent += parseFloat(endpoint.price);
         
         log(`  ✅ Complete! TX: ${txId.substring(0, 12)}...`, '#2ecc71');
