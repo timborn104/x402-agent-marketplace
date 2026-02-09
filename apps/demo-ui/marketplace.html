@@ -33,6 +33,10 @@
       align-items: center;
       gap: 0.75rem;
     }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+    }
     .logo-text {
       background: linear-gradient(90deg, #f7931a, #ff6600);
       -webkit-background-clip: text;
@@ -245,6 +249,11 @@
       font-size: 0.7rem;
       font-weight: bold;
     }
+    .agent-badge.example {
+      background: rgba(255, 255, 255, 0.1);
+      color: #888;
+      border: 1px dashed rgba(255, 255, 255, 0.3);
+    }
     .agent-body { padding: 1.25rem 1.5rem; }
     .agent-desc {
       color: #888;
@@ -386,6 +395,18 @@
 <body>
   <header>
     <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="btcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f7931a"/>
+            <stop offset="100%" style="stop-color:#ff6600"/>
+          </linearGradient>
+        </defs>
+        <circle cx="20" cy="20" r="18" fill="url(#btcGrad)"/>
+        <text x="20" y="27" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="18" font-weight="bold" fill="#000">₿</text>
+        <circle cx="32" cy="8" r="6" fill="#2ecc71"/>
+        <text x="32" y="11" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#fff">AI</text>
+      </svg>
       <span class="logo-text">SatStack</span>
       <span class="bitcoin-badge">₿ Powered by Bitcoin</span>
     </div>
@@ -438,6 +459,10 @@
     <section class="section-header">
       <h2>🤖 Marketplace Agents</h2>
       <p>Specialized AI agents offering paid services on the Stacks network</p>
+      <p style="color: #666; font-size: 0.85rem; margin-top: 0.5rem;">
+        Agents marked <span style="background: rgba(255,255,255,0.1); color: #888; padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px dashed rgba(255,255,255,0.3); font-size: 0.7rem;">EXAMPLE</span> 
+        are demos showcasing the x402 protocol. Want to list your real agent? <a href="https://github.com/timborn104/x402-agent-marketplace" style="color: #f7931a;">Submit a PR →</a>
+      </p>
     </section>
     
     <div class="agents-grid" id="agents-grid">
@@ -501,12 +526,14 @@
 
   <script>
     // Agent data - Stacks ecosystem focused
+    // isExample: true = demo agent (not real), false = real working agent
     const agents = [
       {
         name: 'Gamma NFT Agent',
         icon: '🖼️',
         color: '#9b59b6',
         badge: 'NFT INTEL',
+        isExample: true,
         desc: 'Gamma marketplace analytics. Floor prices, rarity scores, whale tracking for Stacks NFTs.',
         endpoints: [
           { path: '/gamma/floor-price', price: '0.001 STX' },
@@ -519,6 +546,7 @@
         icon: '📈',
         color: '#2ecc71',
         badge: 'EARN BTC',
+        isExample: true,
         desc: 'Stacking pool comparison and BTC rewards optimization. Find the best APY for your STX.',
         endpoints: [
           { path: '/stacking/pools', price: '0.001 STX' },
@@ -531,6 +559,7 @@
         icon: '🔄',
         color: '#e74c3c',
         badge: 'DEX DATA',
+        isExample: true,
         desc: 'ALEX DEX analytics. Token prices, LP yields, optimal swap routing.',
         endpoints: [
           { path: '/alex/price', price: '0.001 STX' },
@@ -543,6 +572,7 @@
         icon: '🆔',
         color: '#3498db',
         badge: '.BTC NAMES',
+        isExample: true,
         desc: 'BNS (Bitcoin Name System) intelligence. Name availability, valuations, expiring premium names.',
         endpoints: [
           { path: '/bns/check', price: '0.0005 STX' },
@@ -555,6 +585,7 @@
         icon: '📜',
         color: '#1abc9c',
         badge: 'AUDITS',
+        isExample: true,
         desc: 'Clarity smart contract analysis. Security audits, gas optimization, code generation.',
         endpoints: [
           { path: '/clarity/audit', price: '0.01 STX' },
@@ -567,6 +598,7 @@
         icon: '🏦',
         color: '#ff6600',
         badge: 'USDA',
+        isExample: true,
         desc: 'Arkadiko protocol intelligence. USDA stability, vault health, liquidation alerts.',
         endpoints: [
           { path: '/arkadiko/usda-rate', price: '0.001 STX' },
@@ -657,6 +689,7 @@
             <div class="agent-name">${agent.name}</div>
             <div class="agent-category">
               <span class="agent-badge">${agent.badge}</span>
+              ${agent.isExample ? '<span class="agent-badge example">EXAMPLE</span>' : ''}
             </div>
           </div>
         </div>
