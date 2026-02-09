@@ -727,11 +727,12 @@
         <div style="margin-bottom: 1.5rem;">
           <label style="display: block; margin-bottom: 0.5rem; color: #888;">Quick Templates:</label>
           <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-            <button class="template-btn" onclick="setTemplate('crypto')">📈 Crypto Analysis</button>
-            <button class="template-btn" onclick="setTemplate('research')">🔍 Market Research</button>
-            <button class="template-btn" onclick="setTemplate('audit')">🛡️ Contract Audit</button>
-            <button class="template-btn" onclick="setTemplate('content')">✍️ Content Creation</button>
-            <button class="template-btn" style="border-color: #ff6600; color: #ff6600;" onclick="setTemplate('stacks')">🟠 Stacks DeFi</button>
+            <button class="template-btn" onclick="setTemplate('nft')">🖼️ NFT Analysis</button>
+            <button class="template-btn" onclick="setTemplate('stacking')">📈 Stacking Rewards</button>
+            <button class="template-btn" onclick="setTemplate('defi')">🔄 DeFi Yields</button>
+            <button class="template-btn" onclick="setTemplate('audit')">📜 Clarity Audit</button>
+            <button class="template-btn" onclick="setTemplate('dao')">🏛️ DAO Proposals</button>
+            <button class="template-btn" onclick="setTemplate('bns')">🆔 BNS Names</button>
           </div>
         </div>
         
@@ -871,127 +872,133 @@
   <script>
     const API_URL = 'http://localhost:3000';
     
-    // Mock agent data
+    // Mock agent data - Stacks ecosystem focused
     const agents = [
       {
-        id: 'oracle',
-        name: 'Oracle Agent',
-        icon: '🔮',
+        id: 'gamma-nft',
+        name: 'Gamma NFT Agent',
+        icon: '🖼️',
         color: '#9b59b6',
-        category: 'oracle',
-        badge: 'VERIFIED',
+        category: 'data',
+        badge: 'NFT INTEL',
         rating: 4.9,
-        calls: '12.4K',
-        desc: 'Real-time price feeds and market data for BTC, STX, and major cryptocurrencies. Aggregated from multiple exchanges.',
+        calls: '24.3K',
+        desc: 'Gamma marketplace analytics. Collection floor prices, rarity scores, whale tracking, and NFT valuations for Stacks NFTs.',
         endpoints: [
-          { method: 'POST', path: '/oracle/btc-price', price: '0.001', desc: 'Current BTC/USD price with 24h stats' },
-          { method: 'POST', path: '/oracle/stx-price', price: '0.001', desc: 'Current STX/USD price with market cap' },
-          { method: 'POST', path: '/oracle/multi-price', price: '0.002', desc: 'Batch price query for multiple assets' },
+          { method: 'POST', path: '/gamma/floor-price', price: '0.001', desc: 'Get collection floor price' },
+          { method: 'POST', path: '/gamma/rarity', price: '0.002', desc: 'Calculate NFT rarity score' },
+          { method: 'POST', path: '/gamma/whale-watch', price: '0.003', desc: 'Track whale wallet activity' },
+          { method: 'POST', path: '/gamma/trending', price: '0.001', desc: 'Trending collections on Gamma' },
         ],
-        earnings: '234.5 STX'
+        earnings: '412.5 STX'
       },
       {
-        id: 'research',
-        name: 'Research Agent',
-        icon: '🔍',
+        id: 'bns-agent',
+        name: 'BNS Name Agent',
+        icon: '🆔',
         color: '#3498db',
         category: 'data',
-        badge: 'POPULAR',
-        rating: 4.7,
-        calls: '8.2K',
-        desc: 'AI-powered web research and analysis. Get comprehensive summaries on any topic with source citations.',
-        endpoints: [
-          { method: 'POST', path: '/intel/research', price: '0.002', desc: 'Deep research on any topic' },
-          { method: 'POST', path: '/intel/summarize', price: '0.001', desc: 'Summarize articles or documents' },
-          { method: 'POST', path: '/intel/compare', price: '0.003', desc: 'Compare multiple topics or products' },
-        ],
-        earnings: '156.8 STX'
-      },
-      {
-        id: 'compute',
-        name: 'Compute Agent',
-        icon: '🧠',
-        color: '#e74c3c',
-        category: 'compute',
-        badge: 'GPU',
+        badge: '.BTC NAMES',
         rating: 4.8,
-        calls: '5.6K',
-        desc: 'GPU-accelerated computation and ML inference. Statistical analysis, predictions, and data processing.',
+        calls: '15.2K',
+        desc: 'BNS (Bitcoin Name System) intelligence. Check name availability, valuations, expiration dates, and registration assistance.',
         endpoints: [
-          { method: 'POST', path: '/compute/analyze', price: '0.005', desc: 'Statistical analysis on datasets' },
-          { method: 'POST', path: '/compute/predict', price: '0.003', desc: 'ML predictions on time series' },
-          { method: 'POST', path: '/compute/embed', price: '0.002', desc: 'Generate text embeddings' },
+          { method: 'POST', path: '/bns/check', price: '0.0005', desc: 'Check if .btc name is available' },
+          { method: 'POST', path: '/bns/valuation', price: '0.002', desc: 'Estimate name market value' },
+          { method: 'POST', path: '/bns/expiring', price: '0.001', desc: 'Find expiring premium names' },
+          { method: 'POST', path: '/bns/history', price: '0.001', desc: 'Name ownership history' },
         ],
-        earnings: '189.2 STX'
+        earnings: '234.8 STX'
       },
       {
-        id: 'creative',
-        name: 'Creative Agent',
-        icon: '🎨',
-        color: '#f39c12',
-        category: 'creative',
-        badge: 'NEW',
-        rating: 4.6,
-        calls: '3.1K',
-        desc: 'AI content generation including copywriting, social posts, and creative writing. Multiple styles available.',
-        endpoints: [
-          { method: 'POST', path: '/create/copy', price: '0.002', desc: 'Marketing copy generation' },
-          { method: 'POST', path: '/create/social', price: '0.001', desc: 'Social media post generator' },
-          { method: 'POST', path: '/create/story', price: '0.005', desc: 'Creative story writing' },
-        ],
-        earnings: '67.4 STX'
-      },
-      {
-        id: 'translator',
-        name: 'Translator Agent',
-        icon: '🌍',
+        id: 'stacking-agent',
+        name: 'Stacking Rewards Agent',
+        icon: '📈',
         color: '#2ecc71',
-        category: 'data',
-        badge: '50+ LANGS',
+        category: 'oracle',
+        badge: 'EARN BTC',
         rating: 4.9,
-        calls: '21.3K',
-        desc: 'Professional-quality translation supporting 50+ languages. Context-aware with domain expertise.',
+        calls: '31.4K',
+        desc: 'Stacking pool comparison and BTC rewards optimization. Compare Stacking DAO, Xverse pools, calculate rewards, and find best APY.',
         endpoints: [
-          { method: 'POST', path: '/translate/text', price: '0.001', desc: 'Translate text to any language' },
-          { method: 'POST', path: '/translate/detect', price: '0.0005', desc: 'Detect source language' },
-          { method: 'POST', path: '/translate/batch', price: '0.005', desc: 'Batch translate documents' },
+          { method: 'POST', path: '/stacking/pools', price: '0.001', desc: 'Compare all stacking pools' },
+          { method: 'POST', path: '/stacking/rewards-calc', price: '0.001', desc: 'Calculate expected BTC rewards' },
+          { method: 'POST', path: '/stacking/cycle-info', price: '0.0005', desc: 'Current cycle status & timing' },
+          { method: 'POST', path: '/stacking/optimize', price: '0.003', desc: 'Optimal stacking strategy' },
         ],
-        earnings: '412.7 STX'
+        earnings: '567.2 STX'
       },
       {
-        id: 'sentinel',
-        name: 'Sentinel Agent',
-        icon: '🛡️',
+        id: 'alex-dex',
+        name: 'ALEX DEX Agent',
+        icon: '🔄',
+        color: '#e74c3c',
+        category: 'oracle',
+        badge: 'DEX DATA',
+        rating: 4.8,
+        calls: '28.7K',
+        desc: 'ALEX DEX analytics and trading intelligence. Token prices, LP yields, swap routing, and arbitrage opportunities.',
+        endpoints: [
+          { method: 'POST', path: '/alex/price', price: '0.001', desc: 'Token price on ALEX' },
+          { method: 'POST', path: '/alex/lp-yield', price: '0.002', desc: 'LP pool APY calculator' },
+          { method: 'POST', path: '/alex/swap-route', price: '0.001', desc: 'Optimal swap route' },
+          { method: 'POST', path: '/alex/volume', price: '0.001', desc: '24h trading volume' },
+        ],
+        earnings: '489.3 STX'
+      },
+      {
+        id: 'dao-agent',
+        name: 'StackerDAO Agent',
+        icon: '🏛️',
+        color: '#f39c12',
+        category: 'data',
+        badge: 'GOVERNANCE',
+        rating: 4.7,
+        calls: '8.9K',
+        desc: 'DAO proposal analysis and governance intelligence. Track votes, analyze proposals, calculate voting power across Stacks DAOs.',
+        endpoints: [
+          { method: 'POST', path: '/dao/proposals', price: '0.001', desc: 'Active proposals list' },
+          { method: 'POST', path: '/dao/analyze', price: '0.003', desc: 'AI proposal analysis' },
+          { method: 'POST', path: '/dao/voting-power', price: '0.001', desc: 'Calculate voting power' },
+          { method: 'POST', path: '/dao/history', price: '0.002', desc: 'DAO voting history' },
+        ],
+        earnings: '145.6 STX'
+      },
+      {
+        id: 'clarity-agent',
+        name: 'Clarity Code Agent',
+        icon: '📜',
         color: '#1abc9c',
         category: 'compute',
-        badge: 'SECURITY',
-        rating: 4.8,
-        calls: '4.7K',
-        desc: 'Smart contract auditing and security analysis. Detect vulnerabilities in Clarity code.',
+        badge: 'CLARITY',
+        rating: 4.9,
+        calls: '12.1K',
+        desc: 'Clarity smart contract analysis. Security audits, gas optimization, code generation, and deployment assistance for Stacks contracts.',
         endpoints: [
-          { method: 'POST', path: '/audit/contract', price: '0.01', desc: 'Full smart contract audit' },
-          { method: 'POST', path: '/audit/quick', price: '0.003', desc: 'Quick vulnerability scan' },
-          { method: 'POST', path: '/audit/gas', price: '0.002', desc: 'Gas optimization analysis' },
+          { method: 'POST', path: '/clarity/audit', price: '0.01', desc: 'Full security audit' },
+          { method: 'POST', path: '/clarity/optimize', price: '0.005', desc: 'Gas optimization' },
+          { method: 'POST', path: '/clarity/generate', price: '0.008', desc: 'Generate contract code' },
+          { method: 'POST', path: '/clarity/explain', price: '0.002', desc: 'Explain contract logic' },
         ],
-        earnings: '298.1 STX'
+        earnings: '356.7 STX'
       },
       {
-        id: 'stacks-defi',
-        name: 'Stacks DeFi Agent',
-        icon: '🟠',
+        id: 'arkadiko-agent',
+        name: 'Arkadiko Vault Agent',
+        icon: '🏦',
         color: '#ff6600',
         category: 'oracle',
-        badge: 'STACKS NATIVE',
-        rating: 4.9,
-        calls: '18.7K',
-        desc: 'Native Stacks DeFi integration. Access ALEX, Arkadiko, Velar protocols. Stacking rewards, LP positions, and yield optimization.',
+        badge: 'USDA',
+        rating: 4.8,
+        calls: '9.4K',
+        desc: 'Arkadiko protocol intelligence. USDA stability, vault health monitoring, liquidation alerts, and collateral ratio optimization.',
         endpoints: [
-          { method: 'POST', path: '/stacks/alex-price', price: '0.001', desc: 'ALEX DEX token prices' },
-          { method: 'POST', path: '/stacks/stacking-info', price: '0.001', desc: 'Current stacking cycle & rewards' },
-          { method: 'POST', path: '/stacks/yield-optimize', price: '0.005', desc: 'Find best yield opportunities' },
-          { method: 'POST', path: '/stacks/usda-rate', price: '0.001', desc: 'Arkadiko USDA stability rate' },
+          { method: 'POST', path: '/arkadiko/usda-rate', price: '0.001', desc: 'USDA/USD peg status' },
+          { method: 'POST', path: '/arkadiko/vault-health', price: '0.002', desc: 'Check vault health ratio' },
+          { method: 'POST', path: '/arkadiko/liquidation-risk', price: '0.002', desc: 'Liquidation risk alert' },
+          { method: 'POST', path: '/arkadiko/optimal-ratio', price: '0.003', desc: 'Optimal collateral ratio' },
         ],
-        earnings: '523.4 STX'
+        earnings: '198.4 STX'
       },
     ];
     
@@ -1219,55 +1226,64 @@ ${JSON.stringify(response, null, 2)}`;
       renderTransactions();
     }, 5000);
     
-    // Workflow templates
+    // Workflow templates - Stacks ecosystem focused
     const workflowTemplates = {
-      crypto: {
-        name: 'Crypto Price Analysis & Prediction',
-        task: 'Get current Bitcoin and STX prices, analyze market trends, and predict price movement for the next 7 days',
+      nft: {
+        name: 'NFT Collection Analysis',
+        task: 'Analyze a Gamma NFT collection for floor price, rarity distribution, and whale activity',
         steps: [
-          { agent: 'oracle', endpoint: 0, desc: 'Fetch BTC price' },
-          { agent: 'oracle', endpoint: 1, desc: 'Fetch STX price' },
-          { agent: 'research', endpoint: 0, desc: 'Analyze market trends' },
-          { agent: 'compute', endpoint: 1, desc: 'ML price prediction' },
+          { agent: 'gamma-nft', endpoint: 0, desc: 'Get floor price' },
+          { agent: 'gamma-nft', endpoint: 1, desc: 'Calculate rarity scores' },
+          { agent: 'gamma-nft', endpoint: 2, desc: 'Track whale wallets' },
+          { agent: 'gamma-nft', endpoint: 3, desc: 'Check trending status' },
         ]
       },
-      research: {
-        name: 'Market Research Report',
-        task: 'Research the DeFi ecosystem on Stacks, compare top protocols, and summarize findings',
+      stacking: {
+        name: 'Stacking Rewards Optimization',
+        task: 'Compare stacking pools, calculate BTC rewards, and find the best APY for my STX',
         steps: [
-          { agent: 'research', endpoint: 0, desc: 'Research Stacks DeFi' },
-          { agent: 'research', endpoint: 2, desc: 'Compare protocols' },
-          { agent: 'research', endpoint: 1, desc: 'Generate summary' },
+          { agent: 'stacking-agent', endpoint: 2, desc: 'Check cycle timing' },
+          { agent: 'stacking-agent', endpoint: 0, desc: 'Compare all pools' },
+          { agent: 'stacking-agent', endpoint: 1, desc: 'Calculate rewards' },
+          { agent: 'stacking-agent', endpoint: 3, desc: 'Get optimal strategy' },
+        ]
+      },
+      defi: {
+        name: 'DeFi Yield Analysis',
+        task: 'Analyze ALEX LP yields, Arkadiko vault health, and find best yield opportunities',
+        steps: [
+          { agent: 'alex-dex', endpoint: 0, desc: 'Get token prices' },
+          { agent: 'alex-dex', endpoint: 1, desc: 'Calculate LP yields' },
+          { agent: 'arkadiko-agent', endpoint: 0, desc: 'Check USDA stability' },
+          { agent: 'arkadiko-agent', endpoint: 3, desc: 'Optimal collateral ratio' },
         ]
       },
       audit: {
-        name: 'Smart Contract Security Audit',
+        name: 'Clarity Contract Audit',
         task: 'Perform a full security audit on a Clarity smart contract with gas optimization',
         steps: [
-          { agent: 'sentinel', endpoint: 1, desc: 'Quick vulnerability scan' },
-          { agent: 'sentinel', endpoint: 0, desc: 'Full contract audit' },
-          { agent: 'sentinel', endpoint: 2, desc: 'Gas optimization' },
+          { agent: 'clarity-agent', endpoint: 3, desc: 'Explain contract logic' },
+          { agent: 'clarity-agent', endpoint: 0, desc: 'Full security audit' },
+          { agent: 'clarity-agent', endpoint: 1, desc: 'Gas optimization' },
         ]
       },
-      content: {
-        name: 'Marketing Content Creation',
-        task: 'Create marketing copy and social media content for a new Stacks project launch',
+      dao: {
+        name: 'DAO Proposal Analysis',
+        task: 'Analyze active DAO proposals, check voting power, and get AI recommendations',
         steps: [
-          { agent: 'research', endpoint: 0, desc: 'Research target audience' },
-          { agent: 'creative', endpoint: 0, desc: 'Generate marketing copy' },
-          { agent: 'creative', endpoint: 1, desc: 'Create social posts' },
-          { agent: 'translator', endpoint: 0, desc: 'Translate to Spanish' },
+          { agent: 'dao-agent', endpoint: 0, desc: 'List active proposals' },
+          { agent: 'dao-agent', endpoint: 1, desc: 'AI proposal analysis' },
+          { agent: 'dao-agent', endpoint: 2, desc: 'Calculate voting power' },
         ]
       },
-      stacks: {
-        name: 'Stacks DeFi Yield Optimization',
-        task: 'Analyze Stacks DeFi protocols, compare yields across ALEX, Arkadiko, and find optimal stacking strategy',
+      bns: {
+        name: 'BNS Name Research',
+        task: 'Find valuable .btc names, check availability, and estimate market value',
         steps: [
-          { agent: 'stacks-defi', endpoint: 0, desc: 'Get ALEX token prices' },
-          { agent: 'stacks-defi', endpoint: 1, desc: 'Check stacking rewards' },
-          { agent: 'stacks-defi', endpoint: 3, desc: 'Get USDA rates' },
-          { agent: 'stacks-defi', endpoint: 2, desc: 'Optimize yield strategy' },
-          { agent: 'compute', endpoint: 1, desc: 'Predict returns' },
+          { agent: 'bns-agent', endpoint: 2, desc: 'Find expiring names' },
+          { agent: 'bns-agent', endpoint: 0, desc: 'Check availability' },
+          { agent: 'bns-agent', endpoint: 1, desc: 'Estimate value' },
+          { agent: 'bns-agent', endpoint: 3, desc: 'Check history' },
         ]
       }
     };
@@ -1347,22 +1363,28 @@ ${JSON.stringify(response, null, 2)}`;
     document.getElementById('task-input').addEventListener('input', (e) => {
       const task = e.target.value.trim().toLowerCase();
       
-      // Auto-detect template based on keywords
-      if (task.includes('bitcoin') || task.includes('btc') || task.includes('price') || task.includes('predict')) {
-        currentWorkflow = workflowTemplates.crypto;
+      // Auto-detect template based on Stacks ecosystem keywords
+      if (task.includes('nft') || task.includes('gamma') || task.includes('collection') || task.includes('rarity')) {
+        currentWorkflow = workflowTemplates.nft;
         showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('research') || task.includes('analyze') || task.includes('defi')) {
-        currentWorkflow = workflowTemplates.research;
+      } else if (task.includes('stacking') || task.includes('btc reward') || task.includes('pool') || task.includes('apy')) {
+        currentWorkflow = workflowTemplates.stacking;
         showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('audit') || task.includes('security') || task.includes('contract')) {
+      } else if (task.includes('alex') || task.includes('swap') || task.includes('lp') || task.includes('yield') || task.includes('defi')) {
+        currentWorkflow = workflowTemplates.defi;
+        showWorkflowPreview(currentWorkflow);
+      } else if (task.includes('audit') || task.includes('clarity') || task.includes('security') || task.includes('contract')) {
         currentWorkflow = workflowTemplates.audit;
         showWorkflowPreview(currentWorkflow);
-      } else if (task.includes('content') || task.includes('marketing') || task.includes('social')) {
-        currentWorkflow = workflowTemplates.content;
+      } else if (task.includes('dao') || task.includes('proposal') || task.includes('vote') || task.includes('governance')) {
+        currentWorkflow = workflowTemplates.dao;
+        showWorkflowPreview(currentWorkflow);
+      } else if (task.includes('bns') || task.includes('.btc') || task.includes('name') || task.includes('domain')) {
+        currentWorkflow = workflowTemplates.bns;
         showWorkflowPreview(currentWorkflow);
       } else if (task.length > 20) {
-        // Default to research for generic queries
-        currentWorkflow = workflowTemplates.research;
+        // Default to stacking for Stacks-related queries
+        currentWorkflow = workflowTemplates.stacking;
         showWorkflowPreview(currentWorkflow);
       }
     });
@@ -1429,13 +1451,13 @@ ${JSON.stringify(response, null, 2)}`;
         
         // Generate mock result
         const mockResults = {
-          'oracle': { btcPrice: 97543.21, stxPrice: 0.89, change: '+2.4%' },
-          'research': { summary: 'Analysis complete', confidence: 0.92, sources: 8 },
-          'compute': { predictions: [115, 118, 121], trend: 'bullish', confidence: 0.87 },
-          'creative': { content: 'Generated marketing copy...', wordCount: 150 },
-          'translator': { translation: 'Contenido traducido...', lang: 'es' },
-          'sentinel': { vulnerabilities: 0, score: 'A+', secure: true },
-          'stacks-defi': { alexPrice: 0.42, stackingAPY: '8.2%', usdaRate: 1.001, protocol: 'ALEX' },
+          'gamma-nft': { floor: '125 STX', volume24h: '2,450 STX', holders: 342, listed: 45 },
+          'bns-agent': { available: true, estimatedValue: '50-100 STX', premium: false },
+          'stacking-agent': { bestPool: 'Stacking DAO', apy: '8.2%', nextCycle: '3 days', btcReward: '0.00012 BTC' },
+          'alex-dex': { price: 0.42, lpApy: '24.5%', volume24h: '1.2M STX', route: 'STX→ALEX' },
+          'dao-agent': { activeProposals: 3, recommendation: 'Vote YES', votingPower: '1,250 STX' },
+          'clarity-agent': { vulnerabilities: 0, gasScore: 'A+', secure: true, linesAnalyzed: 245 },
+          'arkadiko-agent': { usdaRate: 1.001, vaultHealth: 'Healthy', ratio: 185, risk: 'Low' },
         };
         
         const result = mockResults[step.agent];
