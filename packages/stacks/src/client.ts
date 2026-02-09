@@ -70,8 +70,8 @@ export async function createPaymentPayload(
   
   const transaction = await makeSTXTokenTransfer(txOptions);
   
-  // Serialize the transaction
-  const serializedTx = Buffer.from(serializeTransaction(transaction)).toString('hex');
+  // Serialize the transaction (returns hex string in stacks.js v7+)
+  const serializedTx = serializeTransaction(transaction);
   
   // Get signature from the transaction auth
   const auth = transaction.auth;
