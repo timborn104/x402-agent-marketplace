@@ -387,7 +387,8 @@
           <textarea class="task-input" id="task-input" rows="3" placeholder="e.g., 'Check the floor price of Megapont collection and find undervalued NFTs'"></textarea>
           <div class="task-actions">
             <button class="action-btn secondary" onclick="discoverServices()">🔍 Discover</button>
-            <button class="action-btn primary" id="execute-btn" onclick="executeTask()">⚡ Execute Task</button>
+            <button class="action-btn secondary" onclick="suggestTask()" style="background: rgba(155, 89, 182, 0.2); color: #9b59b6;">💡 Suggest</button>
+            <button class="action-btn primary" id="execute-btn" onclick="executeTask()">⚡ Execute</button>
           </div>
         </div>
       </div>
@@ -498,6 +499,33 @@
         document.getElementById('task-input').value = task.name;
         log(`Selected task: ${task.name}`, 'info');
       }
+    }
+    
+    function suggestTask() {
+      const suggestions = [
+        "Find undervalued NFTs on Gamma with rarity score > 90 and floor price under 50 STX",
+        "Compare all stacking pools and calculate my potential BTC rewards for 10,000 STX",
+        "Check if 'satoshi.btc' is available and estimate its market value",
+        "Analyze ALEX LP yields and find the best STX pair for passive income",
+        "Audit my Clarity contract for security vulnerabilities and gas optimization",
+        "Monitor Arkadiko vault health and alert if collateral ratio drops below 150%",
+        "Find .btc names expiring this week that are worth more than 100 STX",
+        "Get real-time prices for STX, ALEX, and USDA then calculate arbitrage opportunities",
+        "Research trending Gamma collections and identify whale accumulation patterns",
+        "Calculate optimal stacking strategy: solo vs pool vs liquid stacking",
+        "Check DAO proposals on StackerDAO and summarize voting recommendations",
+        "Find NFT collections where floor is 20% below average sale price",
+        "Analyze my wallet's stacking history and project next cycle rewards",
+        "Compare USDA stability across Arkadiko vaults and find safest collateral type",
+      ];
+      
+      // Pick random suggestion
+      const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+      document.getElementById('task-input').value = suggestion;
+      
+      log('💡 Suggested task based on available endpoints:', 'info');
+      log(`"${suggestion}"`, 'success');
+      log('Click Execute to run this task.', 'info');
     }
     
     async function executeTask() {
