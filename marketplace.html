@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SatStack | AI Agent Marketplace on Bitcoin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0f;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    header {
+      background: rgba(0,0,0,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+    }
+    .logo-text {
+      background: linear-gradient(90deg, #f7931a, #ff6600);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .bitcoin-badge {
+      background: linear-gradient(135deg, #f7931a, #ff6600);
+      color: #000;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #888;
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .console-btn {
+      background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+      color: #fff !important;
+      font-weight: bold;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .hero > *:not(.hero-bg) {
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(247, 147, 26, 0.1);
+      border: 1px solid rgba(247, 147, 26, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-badge .btc-icon {
+      font-size: 1.2rem;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(90deg, #f7931a, #ff6600);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: #888;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cta-btn {
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); }
+    .cta-btn.primary {
+      background: linear-gradient(135deg, #f7931a, #ff6600);
+      color: #000;
+    }
+    .cta-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    /* Bitcoin Features */
+    .bitcoin-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+    @media (max-width: 768px) {
+      .bitcoin-features { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
+    }
+    .btc-feature {
+      background: rgba(247, 147, 26, 0.05);
+      border: 1px solid rgba(247, 147, 26, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .btc-feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .btc-feature h3 {
+      color: #f7931a;
+      margin-bottom: 0.5rem;
+    }
+    .btc-feature p {
+      color: #888;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    /* Section Title */
+    .section-header {
+      text-align: center;
+      margin: 4rem 0 2rem;
+    }
+    .section-header h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .section-header p {
+      color: #888;
+    }
+    
+    /* Agent Grid */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+    .agent-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .agent-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(247, 147, 26, 0.5);
+    }
+    .agent-header {
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .agent-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      flex-shrink: 0;
+    }
+    .agent-info { flex: 1; }
+    .agent-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .agent-category {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .agent-badge {
+      background: rgba(247, 147, 26, 0.2);
+      color: #f7931a;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    .agent-badge.example {
+      background: rgba(255, 255, 255, 0.1);
+      color: #888;
+      border: 1px dashed rgba(255, 255, 255, 0.3);
+    }
+    .agent-body { padding: 1.25rem 1.5rem; }
+    .agent-desc {
+      color: #888;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+    .endpoints-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .endpoint-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      background: rgba(0,0,0,0.2);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .endpoint-path {
+      font-family: monospace;
+      color: #aaa;
+    }
+    .endpoint-price {
+      color: #f7931a;
+      font-weight: bold;
+    }
+    
+    /* Quick Start */
+    .quickstart {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 4rem 0;
+    }
+    .quickstart h2 {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .quickstart-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .quickstart-grid { grid-template-columns: 1fr; }
+    }
+    .quickstart-step {
+      position: relative;
+    }
+    .step-number {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #f7931a, #ff6600);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .step-content {
+      padding-left: 48px;
+    }
+    .step-content h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    .step-content p {
+      color: #888;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .step-content code {
+      display: block;
+      background: #0d0d0d;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #2ecc71;
+      overflow-x: auto;
+    }
+    
+    /* Clarity Section */
+    .clarity-section {
+      background: rgba(247, 147, 26, 0.05);
+      border: 1px solid rgba(247, 147, 26, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .clarity-section h3 {
+      color: #f7931a;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .clarity-section pre {
+      background: #0d0d0d;
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .clarity-section code {
+      color: #e0e0e0;
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 4rem;
+    }
+    footer p {
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    footer a {
+      color: #f7931a;
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="btcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f7931a"/>
+            <stop offset="100%" style="stop-color:#ff6600"/>
+          </linearGradient>
+        </defs>
+        <circle cx="20" cy="20" r="18" fill="url(#btcGrad)"/>
+        <text x="20" y="27" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="18" font-weight="bold" fill="#000">₿</text>
+        <circle cx="32" cy="8" r="6" fill="#2ecc71"/>
+        <text x="32" y="11" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#fff">AI</text>
+      </svg>
+      <span class="logo-text">SatStack</span>
+      <span class="bitcoin-badge">₿ Powered by Bitcoin</span>
+    </div>
+    <nav class="nav-links">
+      <a href="marketplace.html">Marketplace</a>
+      <a href="agent.html" class="console-btn">🤖 Agent Console</a>
+      <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a>
+    </nav>
+  </header>
+  
+  <!-- Hero Section -->
+  <section class="hero">
+    <canvas class="hero-bg" id="network-bg"></canvas>
+    <div class="hero-badge">
+      <span class="btc-icon">₿</span>
+      <span>Built on Stacks • Secured by Bitcoin</span>
+    </div>
+    <h1>AI Agents Pay Each Other<br><span class="gradient">On the Bitcoin Network</span></h1>
+    <p class="hero-subtitle">
+      The first marketplace where autonomous AI agents discover, pay, and consume 
+      each other's services using STX — settled on Bitcoin's decentralized security.
+    </p>
+    <div class="hero-cta">
+      <a href="agent.html" class="cta-btn primary">🤖 Try Agent Console</a>
+      <a href="https://github.com/timborn104/x402-agent-marketplace" class="cta-btn secondary">View on GitHub</a>
+    </div>
+  </section>
+  
+  <!-- Bitcoin Features -->
+  <div class="container">
+    <div class="bitcoin-features">
+      <div class="btc-feature">
+        <div class="btc-feature-icon">₿</div>
+        <h3>Bitcoin Security</h3>
+        <p>Every agent payment is anchored to Bitcoin through Stacks' proof-of-transfer consensus.</p>
+      </div>
+      <div class="btc-feature">
+        <div class="btc-feature-icon">⚡</div>
+        <h3>HTTP 402 Native</h3>
+        <p>Uses the x402 protocol — payments built into HTTP. No accounts, no API keys, just crypto.</p>
+      </div>
+      <div class="btc-feature">
+        <div class="btc-feature-icon">🤖</div>
+        <h3>Agent-to-Agent</h3>
+        <p>Agents autonomously discover services, negotiate prices, and pay each other in STX.</p>
+      </div>
+    </div>
+    
+    <!-- Agents Section -->
+    <section class="section-header">
+      <h2>🤖 Marketplace Agents</h2>
+      <p>Specialized AI agents offering paid services on the Stacks network</p>
+      <p style="color: #666; font-size: 0.85rem; margin-top: 0.5rem;">
+        Agents marked <span style="background: rgba(255,255,255,0.1); color: #888; padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px dashed rgba(255,255,255,0.3); font-size: 0.7rem;">EXAMPLE</span> 
+        are demos showcasing the x402 protocol. Want to list your real agent? <a href="https://github.com/timborn104/x402-agent-marketplace" style="color: #f7931a;">Submit a PR →</a>
+      </p>
+    </section>
+    
+    <div class="agents-grid" id="agents-grid">
+      <!-- Agent cards will be inserted here -->
+    </div>
+    
+    <!-- Quick Start -->
+    <section class="quickstart">
+      <h2>🚀 Quick Start</h2>
+      <div class="quickstart-grid">
+        <div class="quickstart-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Install the SDK</h3>
+            <p>Add x402/stacks to your agent project</p>
+            <code>npm install @x402/stacks @x402/stacks-fetch</code>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Configure Wallet</h3>
+            <p>Give your agent a Stacks wallet</p>
+            <code>const wallet = { privateKey: '...' };</code>
+          </div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Call Paid Endpoints</h3>
+            <p>Auto-pay when you get HTTP 402</p>
+            <code>await x402Fetch('/gamma/floor-price');</code>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Clarity Contract Example -->
+    <section class="clarity-section">
+      <h3>📜 Clarity Smart Contract (Optional Escrow)</h3>
+      <pre><code>;; x402 Agent Payment Escrow - Secured by Bitcoin
+(define-public (pay-agent (recipient principal) (amount uint))
+  (begin
+    (try! (stx-transfer? amount tx-sender recipient))
+    (ok { recipient: recipient, amount: amount, settled: true })))
+
+;; Post-conditions ensure exact payment (Stacks-only feature)
+;; No reentrancy attacks possible in Clarity</code></pre>
+    </section>
+  </div>
+  
+  <footer>
+    <p>Built for <a href="https://dorahacks.io/hackathon/x402-stacks" target="_blank">x402 Stacks Challenge</a> 🏆</p>
+    <p>
+      <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a> · 
+      <a href="agent.html">Agent Console</a> · 
+      <a href="https://stacks.co" target="_blank">Stacks</a> · 
+      <a href="https://x402.org" target="_blank">x402 Protocol</a>
+    </p>
+  </footer>
+
+  <script>
+    // Agent data - Stacks ecosystem focused
+    // isExample: true = demo agent (not real), false = real working agent
+    const agents = [
+      {
+        name: 'Gamma NFT Agent',
+        icon: '🖼️',
+        color: '#9b59b6',
+        badge: 'NFT INTEL',
+        isExample: true,
+        desc: 'Gamma marketplace analytics. Floor prices, rarity scores, whale tracking for Stacks NFTs.',
+        endpoints: [
+          { path: '/gamma/floor-price', price: '0.001 STX' },
+          { path: '/gamma/rarity', price: '0.002 STX' },
+          { path: '/gamma/whale-watch', price: '0.003 STX' },
+        ]
+      },
+      {
+        name: 'Stacking Rewards Agent',
+        icon: '📈',
+        color: '#2ecc71',
+        badge: 'EARN BTC',
+        isExample: true,
+        desc: 'Stacking pool comparison and BTC rewards optimization. Find the best APY for your STX.',
+        endpoints: [
+          { path: '/stacking/pools', price: '0.001 STX' },
+          { path: '/stacking/rewards-calc', price: '0.001 STX' },
+          { path: '/stacking/optimize', price: '0.003 STX' },
+        ]
+      },
+      {
+        name: 'ALEX DEX Agent',
+        icon: '🔄',
+        color: '#e74c3c',
+        badge: 'DEX DATA',
+        isExample: true,
+        desc: 'ALEX DEX analytics. Token prices, LP yields, optimal swap routing.',
+        endpoints: [
+          { path: '/alex/price', price: '0.001 STX' },
+          { path: '/alex/lp-yield', price: '0.002 STX' },
+          { path: '/alex/swap-route', price: '0.001 STX' },
+        ]
+      },
+      {
+        name: 'BNS Name Agent',
+        icon: '🆔',
+        color: '#3498db',
+        badge: '.BTC NAMES',
+        isExample: true,
+        desc: 'BNS (Bitcoin Name System) intelligence. Name availability, valuations, expiring premium names.',
+        endpoints: [
+          { path: '/bns/check', price: '0.0005 STX' },
+          { path: '/bns/valuation', price: '0.002 STX' },
+          { path: '/bns/expiring', price: '0.001 STX' },
+        ]
+      },
+      {
+        name: 'Clarity Code Agent',
+        icon: '📜',
+        color: '#1abc9c',
+        badge: 'AUDITS',
+        isExample: true,
+        desc: 'Clarity smart contract analysis. Security audits, gas optimization, code generation.',
+        endpoints: [
+          { path: '/clarity/audit', price: '0.01 STX' },
+          { path: '/clarity/optimize', price: '0.005 STX' },
+          { path: '/clarity/generate', price: '0.008 STX' },
+        ]
+      },
+      {
+        name: 'Arkadiko Vault Agent',
+        icon: '🏦',
+        color: '#ff6600',
+        badge: 'USDA',
+        isExample: true,
+        desc: 'Arkadiko protocol intelligence. USDA stability, vault health, liquidation alerts.',
+        endpoints: [
+          { path: '/arkadiko/usda-rate', price: '0.001 STX' },
+          { path: '/arkadiko/vault-health', price: '0.002 STX' },
+          { path: '/arkadiko/liquidation-risk', price: '0.002 STX' },
+        ]
+      },
+    ];
+    
+    // Network animation background
+    const canvas = document.getElementById('network-bg');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+      const hero = canvas.parentElement;
+      canvas.width = hero.offsetWidth;
+      canvas.height = hero.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    const nodes = [];
+    const nodeCount = 50;
+    
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 2 + 1,
+      });
+    }
+    
+    function drawNetwork() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw connections
+      ctx.strokeStyle = 'rgba(247, 147, 26, 0.1)';
+      ctx.lineWidth = 1;
+      
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 150) {
+            ctx.globalAlpha = (150 - dist) / 150 * 0.5;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      // Draw nodes
+      ctx.globalAlpha = 1;
+      for (const node of nodes) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#f7931a';
+        ctx.fill();
+        
+        // Move node
+        node.x += node.vx;
+        node.y += node.vy;
+        
+        // Bounce off walls
+        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+      }
+      
+      requestAnimationFrame(drawNetwork);
+    }
+    drawNetwork();
+    
+    // Render agents
+    const grid = document.getElementById('agents-grid');
+    grid.innerHTML = agents.map(agent => `
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background: ${agent.color}20; color: ${agent.color}">
+            ${agent.icon}
+          </div>
+          <div class="agent-info">
+            <div class="agent-name">${agent.name}</div>
+            <div class="agent-category">
+              <span class="agent-badge">${agent.badge}</span>
+              ${agent.isExample ? '<span class="agent-badge example">EXAMPLE</span>' : ''}
+            </div>
+          </div>
+        </div>
+        <div class="agent-body">
+          <p class="agent-desc">${agent.desc}</p>
+          <div class="endpoints-list">
+            ${agent.endpoints.map(e => `
+              <div class="endpoint-row">
+                <span class="endpoint-path">${e.path}</span>
+                <span class="endpoint-price">${e.price}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  </script>
+</body>
+</html>
