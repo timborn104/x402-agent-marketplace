@@ -466,6 +466,147 @@
       to { transform: rotate(360deg); }
     }
     
+    /* Stacks Section */
+    .stacks-section {
+      margin-top: 4rem;
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, rgba(255,102,0,0.1) 0%, rgba(255,153,0,0.05) 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(255,102,0,0.2);
+    }
+    .stacks-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #ff6600;
+    }
+    .stacks-subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 2.5rem;
+    }
+    .stacks-features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 900px) {
+      .stacks-features { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .stacks-features { grid-template-columns: 1fr; }
+    }
+    .stacks-feature {
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .stacks-feature h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #ff9900;
+    }
+    .stacks-feature p {
+      font-size: 0.85rem;
+      color: #888;
+      line-height: 1.5;
+    }
+    .feature-badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(255,102,0,0.2);
+      color: #ff6600;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .feature-code {
+      display: block;
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      background: rgba(0,0,0,0.5);
+      border-radius: 4px;
+      font-size: 0.7rem;
+      color: #2ecc71;
+    }
+    .token-list {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .token-badge {
+      background: rgba(255,255,255,0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .clarity-example {
+      background: rgba(0,0,0,0.4);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .clarity-example h3 {
+      margin-bottom: 1rem;
+      color: #ff9900;
+    }
+    .clarity-example pre {
+      background: #0d0d0d;
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    .clarity-example code {
+      color: #e0e0e0;
+    }
+    .ecosystem-section {
+      text-align: center;
+    }
+    .ecosystem-section h3 {
+      margin-bottom: 1.5rem;
+      color: #ff9900;
+    }
+    .ecosystem-grid {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .ecosystem-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+    }
+    .ecosystem-item img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+    .ecosystem-item span {
+      font-weight: bold;
+    }
+    .ecosystem-item small {
+      color: #888;
+      font-size: 0.8rem;
+    }
+    
     /* Footer */
     footer {
       text-align: center;
@@ -506,7 +647,7 @@
     <div class="stats-bar">
       <div class="stat-card">
         <div class="stat-label">Active Agents</div>
-        <div class="stat-value orange" id="stat-agents">6</div>
+        <div class="stat-value orange" id="stat-agents">7</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Total Endpoints</div>
@@ -590,6 +731,7 @@
             <button class="template-btn" onclick="setTemplate('research')">🔍 Market Research</button>
             <button class="template-btn" onclick="setTemplate('audit')">🛡️ Contract Audit</button>
             <button class="template-btn" onclick="setTemplate('content')">✍️ Content Creation</button>
+            <button class="template-btn" style="border-color: #ff6600; color: #ff6600;" onclick="setTemplate('stacks')">🟠 Stacks DeFi</button>
           </div>
         </div>
         
@@ -613,14 +755,118 @@
     </div>
   </div>
   
-  <footer>
-    <p>Built for <a href="https://dorahacks.io/hackathon/x402-stacks" target="_blank">x402 Stacks Challenge</a> 🏆</p>
-    <p style="margin-top: 0.5rem;">
-      <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a> · 
-      <a href="index.html">Simple Demo</a> · 
-      Powered by <a href="https://stacks.co" target="_blank">Stacks</a>
-    </p>
-  </footer>
+  <!-- Stacks Native Section -->
+    <div class="stacks-section">
+      <h2>🟠 Built on Stacks</h2>
+      <p class="stacks-subtitle">Leveraging Bitcoin's security with smart contract capabilities</p>
+      
+      <div class="stacks-features">
+        <div class="stacks-feature">
+          <div class="feature-icon">₿</div>
+          <h3>sBTC Ready</h3>
+          <p>Accept Bitcoin-backed payments via sBTC. Agents can receive BTC value with Stacks speed.</p>
+          <div class="feature-badge">Coming Q1 2026</div>
+        </div>
+        
+        <div class="stacks-feature">
+          <div class="feature-icon">🔐</div>
+          <h3>Post-Conditions</h3>
+          <p>Stacks' unique safety feature ensures payments execute exactly as expected. No surprises.</p>
+          <code class="feature-code">(stx-transfer? amount sender recipient)</code>
+        </div>
+        
+        <div class="stacks-feature">
+          <div class="feature-icon">🪙</div>
+          <h3>SIP-010 Tokens</h3>
+          <p>Pay with any Stacks token - STX, ALEX, USDA, or custom tokens. Full fungible token support.</p>
+          <div class="token-list">
+            <span class="token-badge">STX</span>
+            <span class="token-badge">ALEX</span>
+            <span class="token-badge">USDA</span>
+            <span class="token-badge">+50</span>
+          </div>
+        </div>
+        
+        <div class="stacks-feature">
+          <div class="feature-icon">📜</div>
+          <h3>Clarity Contracts</h3>
+          <p>Decidable smart contracts. No reentrancy bugs. Perfect for trustless agent payments.</p>
+          <div class="feature-badge">Auditable</div>
+        </div>
+      </div>
+      
+      <!-- Clarity Contract Example -->
+      <div class="clarity-example">
+        <h3>💡 Example: Agent Payment Contract (Clarity)</h3>
+        <pre><code>;; x402 Agent Payment Contract
+;; Handles escrow and settlement for agent-to-agent payments
+
+(define-map agent-balances principal uint)
+(define-map pending-payments 
+  { tx-id: (buff 32) } 
+  { sender: principal, recipient: principal, amount: uint, settled: bool })
+
+;; Deposit STX for agent payments
+(define-public (deposit (amount uint))
+  (begin
+    (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
+    (map-set agent-balances tx-sender 
+      (+ (default-to u0 (map-get? agent-balances tx-sender)) amount))
+    (ok amount)))
+
+;; Create payment with post-conditions
+(define-public (create-payment (recipient principal) (amount uint) (tx-id (buff 32)))
+  (let ((sender-balance (default-to u0 (map-get? agent-balances tx-sender))))
+    (asserts! (>= sender-balance amount) (err u1)) ;; Insufficient balance
+    (map-set pending-payments { tx-id: tx-id }
+      { sender: tx-sender, recipient: recipient, amount: amount, settled: false })
+    (ok tx-id)))
+
+;; Settle payment after service delivered
+(define-public (settle-payment (tx-id (buff 32)))
+  (let ((payment (unwrap! (map-get? pending-payments { tx-id: tx-id }) (err u2))))
+    (asserts! (is-eq (get settled payment) false) (err u3))
+    (try! (as-contract (stx-transfer? (get amount payment) tx-sender (get recipient payment))))
+    (map-set pending-payments { tx-id: tx-id } (merge payment { settled: true }))
+    (ok true)))</code></pre>
+      </div>
+      
+      <!-- Stacks Ecosystem -->
+      <div class="ecosystem-section">
+        <h3>🌐 Stacks Ecosystem Integration</h3>
+        <div class="ecosystem-grid">
+          <div class="ecosystem-item">
+            <img src="https://assets.website-files.com/618b0aafa4afde65f2fe38fe/61908d908d5fd82fdf53c5e0_alex.png" alt="ALEX" onerror="this.style.display='none'">
+            <span>ALEX DEX</span>
+            <small>Price feeds & swaps</small>
+          </div>
+          <div class="ecosystem-item">
+            <span style="font-size: 2rem;">🏛️</span>
+            <span>Arkadiko</span>
+            <small>USDA stablecoin</small>
+          </div>
+          <div class="ecosystem-item">
+            <span style="font-size: 2rem;">⚡</span>
+            <span>Velar</span>
+            <small>Perpetual DEX</small>
+          </div>
+          <div class="ecosystem-item">
+            <span style="font-size: 2rem;">🔮</span>
+            <span>Stacking</span>
+            <small>BTC yield agents</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>Built for <a href="https://dorahacks.io/hackathon/x402-stacks" target="_blank">x402 Stacks Challenge</a> 🏆</p>
+      <p style="margin-top: 0.5rem;">
+        <a href="https://github.com/timborn104/x402-agent-marketplace" target="_blank">GitHub</a> · 
+        <a href="index.html">Simple Demo</a> · 
+        Powered by <a href="https://stacks.co" target="_blank">Stacks</a>
+      </p>
+    </footer>
 
   <script>
     const API_URL = 'http://localhost:3000';
@@ -728,6 +974,24 @@
           { method: 'POST', path: '/audit/gas', price: '0.002', desc: 'Gas optimization analysis' },
         ],
         earnings: '298.1 STX'
+      },
+      {
+        id: 'stacks-defi',
+        name: 'Stacks DeFi Agent',
+        icon: '🟠',
+        color: '#ff6600',
+        category: 'oracle',
+        badge: 'STACKS NATIVE',
+        rating: 4.9,
+        calls: '18.7K',
+        desc: 'Native Stacks DeFi integration. Access ALEX, Arkadiko, Velar protocols. Stacking rewards, LP positions, and yield optimization.',
+        endpoints: [
+          { method: 'POST', path: '/stacks/alex-price', price: '0.001', desc: 'ALEX DEX token prices' },
+          { method: 'POST', path: '/stacks/stacking-info', price: '0.001', desc: 'Current stacking cycle & rewards' },
+          { method: 'POST', path: '/stacks/yield-optimize', price: '0.005', desc: 'Find best yield opportunities' },
+          { method: 'POST', path: '/stacks/usda-rate', price: '0.001', desc: 'Arkadiko USDA stability rate' },
+        ],
+        earnings: '523.4 STX'
       },
     ];
     
@@ -994,6 +1258,17 @@ ${JSON.stringify(response, null, 2)}`;
           { agent: 'creative', endpoint: 1, desc: 'Create social posts' },
           { agent: 'translator', endpoint: 0, desc: 'Translate to Spanish' },
         ]
+      },
+      stacks: {
+        name: 'Stacks DeFi Yield Optimization',
+        task: 'Analyze Stacks DeFi protocols, compare yields across ALEX, Arkadiko, and find optimal stacking strategy',
+        steps: [
+          { agent: 'stacks-defi', endpoint: 0, desc: 'Get ALEX token prices' },
+          { agent: 'stacks-defi', endpoint: 1, desc: 'Check stacking rewards' },
+          { agent: 'stacks-defi', endpoint: 3, desc: 'Get USDA rates' },
+          { agent: 'stacks-defi', endpoint: 2, desc: 'Optimize yield strategy' },
+          { agent: 'compute', endpoint: 1, desc: 'Predict returns' },
+        ]
       }
     };
     
@@ -1160,6 +1435,7 @@ ${JSON.stringify(response, null, 2)}`;
           'creative': { content: 'Generated marketing copy...', wordCount: 150 },
           'translator': { translation: 'Contenido traducido...', lang: 'es' },
           'sentinel': { vulnerabilities: 0, score: 'A+', secure: true },
+          'stacks-defi': { alexPrice: 0.42, stackingAPY: '8.2%', usdaRate: 1.001, protocol: 'ALEX' },
         };
         
         const result = mockResults[step.agent];
