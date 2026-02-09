@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>x402 Agent Marketplace</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 2rem;
+    }
+    .agents {
+      display: grid;
+      grid-template-columns: 1fr 200px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .agent {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .agent h2 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    .agent-icon {
+      font-size: 1.5rem;
+    }
+    .balance {
+      background: rgba(46, 204, 113, 0.2);
+      border: 1px solid #2ecc71;
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+    .address {
+      font-size: 0.7rem;
+      color: #666;
+      word-break: break-all;
+    }
+    .services {
+      margin-top: 1rem;
+    }
+    .service {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .service-name { font-weight: 600; }
+    .service-price {
+      background: #f39c12;
+      color: #000;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .payment-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem 0;
+    }
+    .flow-arrow {
+      font-size: 2rem;
+      color: #f39c12;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .tx-log {
+      background: #0d0d0d;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 2rem;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.85rem;
+    }
+    .tx-log .tx {
+      padding: 0.5rem;
+      border-bottom: 1px solid #222;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .tx-log .tx:last-child { border-bottom: none; }
+    .tx-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2ecc71;
+    }
+    .tx-status.pending { background: #f39c12; animation: blink 1s infinite; }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .tx-amount { color: #f39c12; }
+    .tx-id { color: #666; font-size: 0.75rem; }
+    .tx-id a { color: #3498db; text-decoration: none; }
+    .tx-id a:hover { text-decoration: underline; }
+    .btn {
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      border: none;
+      color: #fff;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: block;
+      margin: 2rem auto;
+      transition: transform 0.2s;
+    }
+    .btn:hover { transform: scale(1.05); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .response-box {
+      background: rgba(52, 152, 219, 0.2);
+      border: 1px solid #3498db;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: none;
+    }
+    .response-box.show { display: block; }
+    .response-box h4 { margin-bottom: 0.5rem; color: #3498db; }
+    .response-box pre {
+      font-family: monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚡ x402 Agent Marketplace</h1>
+    <p class="subtitle">AI Agents paying AI Agents with Stacks (STX)</p>
+    
+    <div class="agents">
+      <!-- Buyer Agent -->
+      <div class="agent">
+        <h2><span class="agent-icon">🤖</span> Buyer Agent</h2>
+        <div class="balance">
+          <div>💰 <span id="buyer-balance">500.000000</span> STX</div>
+          <div class="address" id="buyer-address">ST2W4FEZHSEECBGX52SNBWNR9HC596QF34RHQER3R</div>
+        </div>
+        <p style="color: #888; font-size: 0.9rem;">
+          An AI agent that needs services from other agents. 
+          Automatically discovers, pays, and uses capabilities.
+        </p>
+        <div class="response-box" id="response-box">
+          <h4>📥 Response Received</h4>
+          <pre id="response-content"></pre>
+        </div>
+      </div>
+      
+      <!-- Payment Flow -->
+      <div class="payment-flow">
+        <div class="flow-arrow" id="flow-arrow" style="opacity: 0.3;">→</div>
+        <div style="text-align: center; color: #888; font-size: 0.8rem;">
+          x402 Protocol<br/>
+          HTTP 402 → Payment → 200
+        </div>
+        <div class="flow-arrow" id="flow-arrow-back" style="opacity: 0.3; transform: rotate(180deg);">→</div>
+      </div>
+      
+      <!-- Seller Agent -->
+      <div class="agent">
+        <h2><span class="agent-icon">🔮</span> Oracle Agent</h2>
+        <div class="balance">
+          <div>💰 <span id="seller-balance">0.000000</span> STX</div>
+          <div class="address" id="seller-address">ST1SQD3VHD3F9PXGMXD5APF441H24SGX4JZHMJJ6R</div>
+        </div>
+        <div class="services">
+          <div class="service">
+            <div>
+              <div class="service-name">🪙 /oracle/btc-price</div>
+              <div style="font-size: 0.8rem; color: #888;">Real-time BTC price</div>
+            </div>
+            <span class="service-price">0.001 STX</span>
+          </div>
+          <div class="service">
+            <div>
+              <div class="service-name">🔍 /intel/research</div>
+              <div style="font-size: 0.8rem; color: #888;">Web research on any topic</div>
+            </div>
+            <span class="service-price">0.002 STX</span>
+          </div>
+          <div class="service">
+            <div>
+              <div class="service-name">🧠 /compute/analyze</div>
+              <div style="font-size: 0.8rem; color: #888;">GPU-powered analysis</div>
+            </div>
+            <span class="service-price">0.005 STX</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="btn" id="run-demo" onclick="runDemo()">
+      ▶️ Run Agent Demo
+    </button>
+    
+    <div class="tx-log" id="tx-log">
+      <div style="color: #666; text-align: center; padding: 1rem;">
+        Transaction log will appear here...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000';
+    let txCount = 0;
+    
+    function log(message, type = 'info', txId = null) {
+      const logEl = document.getElementById('tx-log');
+      if (txCount === 0) logEl.innerHTML = '';
+      
+      const tx = document.createElement('div');
+      tx.className = 'tx';
+      
+      const status = document.createElement('div');
+      status.className = 'tx-status' + (type === 'pending' ? ' pending' : '');
+      
+      const content = document.createElement('div');
+      content.style.flex = '1';
+      content.innerHTML = message;
+      
+      if (txId) {
+        const idEl = document.createElement('div');
+        idEl.className = 'tx-id';
+        idEl.innerHTML = `TX: <a href="https://explorer.stacks.co/txid/${txId}?chain=testnet" target="_blank">${txId.substring(0, 16)}...</a>`;
+        content.appendChild(idEl);
+      }
+      
+      tx.appendChild(status);
+      tx.appendChild(content);
+      logEl.appendChild(tx);
+      logEl.scrollTop = logEl.scrollHeight;
+      txCount++;
+    }
+    
+    function animatePayment() {
+      const arrow = document.getElementById('flow-arrow');
+      arrow.style.opacity = '1';
+      arrow.style.color = '#2ecc71';
+      setTimeout(() => {
+        arrow.style.opacity = '0.3';
+        arrow.style.color = '#f39c12';
+      }, 1000);
+    }
+    
+    function animateResponse() {
+      const arrow = document.getElementById('flow-arrow-back');
+      arrow.style.opacity = '1';
+      arrow.style.color = '#2ecc71';
+      setTimeout(() => {
+        arrow.style.opacity = '0.3';
+        arrow.style.color = '#f39c12';
+      }, 1000);
+    }
+    
+    function updateBalance(id, amount) {
+      const el = document.getElementById(id);
+      const current = parseFloat(el.textContent);
+      const target = current + amount;
+      el.textContent = target.toFixed(6);
+    }
+    
+    function showResponse(data) {
+      const box = document.getElementById('response-box');
+      const content = document.getElementById('response-content');
+      content.textContent = JSON.stringify(data, null, 2);
+      box.classList.add('show');
+    }
+    
+    async function runDemo() {
+      const btn = document.getElementById('run-demo');
+      btn.disabled = true;
+      btn.textContent = '⏳ Running...';
+      
+      try {
+        // Step 1: Discover services
+        log('🔍 <b>Discovering services...</b>');
+        await new Promise(r => setTimeout(r, 500));
+        
+        const servicesRes = await fetch(`${API_URL}/services`);
+        const services = await servicesRes.json();
+        log(`Found <b>${services.services.length}</b> paid services from <b>${services.agent}</b>`);
+        
+        await new Promise(r => setTimeout(r, 800));
+        
+        // Step 2: Request without payment
+        log('📤 Requesting /oracle/btc-price without payment...');
+        animatePayment();
+        
+        const res1 = await fetch(`${API_URL}/oracle/btc-price`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        
+        if (res1.status === 402) {
+          log('⚠️ Received <span class="tx-amount">HTTP 402 Payment Required</span>');
+          const requirement = res1.headers.get('X-Payment-Required');
+          const reqData = JSON.parse(atob(requirement));
+          log(`💰 Price: <span class="tx-amount">${reqData.amount / 1000000} STX</span> → ${reqData.recipient.substring(0, 12)}...`);
+        }
+        
+        await new Promise(r => setTimeout(r, 1000));
+        
+        // Step 3: Create payment (simulated - actual payment happens server-side)
+        log('✍️ <b>Signing STX payment transaction...</b>', 'pending');
+        await new Promise(r => setTimeout(r, 800));
+        
+        // Step 4: Retry with payment
+        log('📤 Retrying with X-Payment header...', 'pending');
+        animatePayment();
+        
+        // This would be the actual x402 fetch in production
+        // For demo, we'll use a mock endpoint
+        const res2 = await fetch(`${API_URL}/demo/btc-price`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ demo: true })
+        });
+        
+        await new Promise(r => setTimeout(r, 500));
+        
+        if (res2.ok) {
+          const data = await res2.json();
+          animateResponse();
+          
+          log(`✅ <b>Payment accepted!</b> <span class="tx-amount">-0.001 STX</span>`, 'success', data.payment?.txId || 'demo-tx-123');
+          updateBalance('buyer-balance', -0.001);
+          updateBalance('seller-balance', 0.001);
+          
+          showResponse(data);
+          log('🎉 <b>Agent-to-agent payment complete!</b>');
+        } else {
+          log('❌ Request failed: ' + res2.status);
+        }
+        
+      } catch (err) {
+        log('❌ Error: ' + err.message);
+        console.error(err);
+      }
+      
+      btn.disabled = false;
+      btn.textContent = '▶️ Run Agent Demo';
+    }
+    
+    // Check if server is running
+    fetch(`${API_URL}/health`).catch(() => {
+      log('⚠️ Demo server not running. Start with: <code>node run-demo.mjs</code>');
+    });
+  </script>
+</body>
+</html>

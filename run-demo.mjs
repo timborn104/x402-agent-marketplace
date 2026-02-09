@@ -4,6 +4,9 @@ import { createPaymentPayload, createPaymentRequirement, encodePayment, getWalle
 const SELLER_URL = 'http://localhost:3000';
 const BUYER_KEY = '48b2a6498ee3e4722ff63f47f5d4e4a73dfaafcab0a570a24f24764ad5689e3a';
 
+// Track nonce manually since testnet is slow to update
+let currentNonce = null;
+
 async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -20,9 +23,76 @@ async function waitForServer(url, maxAttempts = 10) {
   return false;
 }
 
-async function main() {
-  console.log('🚀 Starting Demo Seller...\n');
+async function makePayment(endpoint, body = {}) {
+  const buyerAddress = getWalletAddress(BUYER_KEY, 'testnet');
   
+  // 1. Get payment requirement
+  const res1 = await fetch(`${SELLER_URL}${endpoint}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  
+  if (res1.status !== 402) {
+    if (res1.ok) return { success: true, data: await res1.json(), paid: false };
+    throw new Error(`Unexpected status: ${res1.status}`);
+  }
+  
+  const requirement = res1.headers.get('X-Payment-Required');
+  const reqData = JSON.parse(Buffer.from(requirement, 'base64').toString());
+  
+  // 2. Create payment with manual nonce tracking
+  const paymentReq = createPaymentRequirement(
+    reqData.recipient,
+    reqData.amount,
+    { chainId: reqData.chainId }
+  );
+  
+  // Get nonce from network if not set, otherwise increment
+  const options = currentNonce !== null ? { nonce: currentNonce } : {};
+  
+  const payload = await createPaymentPayload(paymentReq, {
+    privateKey: BUYER_KEY,
+    address: buyerAddress
+  }, options);
+  
+  // Track the nonce we used
+  if (currentNonce === null) {
+    currentNonce = payload.nonce + 1;
+  } else {
+    currentNonce++;
+  }
+  
+  // 3. Retry with payment
+  const encodedPayment = encodePayment(payload);
+  const res2 = await fetch(`${SELLER_URL}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Payment': encodedPayment
+    },
+    body: JSON.stringify(body)
+  });
+  
+  if (!res2.ok) {
+    const err = await res2.text();
+    throw new Error(`Payment failed: ${err}`);
+  }
+  
+  return { 
+    success: true, 
+    data: await res2.json(), 
+    paid: true,
+    amount: reqData.amount / 1000000 
+  };
+}
+
+async function main() {
+  console.log('\n╔══════════════════════════════════════════════════════════╗');
+  console.log('║        🔮 x402 Agent Marketplace Demo                    ║');
+  console.log('║        AI Agents Paying AI Agents with STX               ║');
+  console.log('╚══════════════════════════════════════════════════════════╝\n');
+
   // Start seller in background
   const seller = spawn('node', ['apps/demo-seller/dist/index.js'], {
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -31,13 +101,13 @@ async function main() {
   });
   
   seller.stdout.on('data', (data) => {
-    process.stdout.write('[SELLER] ' + data.toString());
+    const lines = data.toString().split('\n').filter(l => l.trim());
+    lines.forEach(line => console.log('  [Oracle] ' + line));
   });
   seller.stderr.on('data', (data) => {
-    process.stderr.write('[SELLER ERR] ' + data.toString());
+    console.log('  [Oracle ERR] ' + data.toString());
   });
   
-  // Wait for server to be ready
   const ready = await waitForServer(SELLER_URL);
   if (!ready) {
     console.log('❌ Server failed to start');
@@ -45,84 +115,67 @@ async function main() {
     process.exit(1);
   }
   
-  console.log('\n✅ Server ready!\n');
-  console.log('='.repeat(50));
+  console.log('\n' + '─'.repeat(60) + '\n');
   
   try {
     const buyerAddress = getWalletAddress(BUYER_KEY, 'testnet');
-    console.log('🤖 Buyer:', buyerAddress);
-    
     const balance = await getBalance(buyerAddress, { type: 'testnet' });
-    console.log('💰 Balance:', (Number(balance) / 1000000).toFixed(6), 'STX');
     
-    // 1. Request without payment
-    console.log('\n📤 Request /summarize WITHOUT payment...');
-    const res1 = await fetch(`${SELLER_URL}/summarize`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: 'Hello world' })
+    console.log('🤖 BUYER AGENT');
+    console.log(`   Address: ${buyerAddress}`);
+    console.log(`   Balance: ${(Number(balance) / 1000000).toFixed(6)} STX`);
+    
+    console.log('\n' + '─'.repeat(60) + '\n');
+    
+    // Demo 1: BTC Price Oracle
+    console.log('📊 Demo 1: Getting BTC Price from Oracle Agent...\n');
+    const btc = await makePayment('/oracle/btc-price', {});
+    console.log(`   💰 Paid: ${btc.amount} STX`);
+    console.log(`   📈 BTC Price: $${btc.data.price.toFixed(2)}`);
+    console.log(`   📊 24h Change: ${btc.data.change24h}`);
+    console.log(`   🔗 TX: ${btc.data.payment?.txId?.substring(0, 24)}...`);
+    
+    console.log('\n' + '─'.repeat(60) + '\n');
+    
+    // Demo 2: AI Research
+    console.log('🔍 Demo 2: AI Research on "Stacks Bitcoin DeFi"...\n');
+    const research = await makePayment('/intel/research', { 
+      query: 'Stacks Bitcoin DeFi ecosystem 2026',
+      depth: 'quick'
     });
-    console.log('   Status:', res1.status, res1.status === 402 ? '(Payment Required ✓)' : '');
+    console.log(`   💰 Paid: ${research.amount} STX`);
+    console.log(`   📝 Summary: ${research.data.summary.substring(0, 80)}...`);
+    console.log(`   📊 Confidence: ${(research.data.confidence * 100).toFixed(0)}%`);
+    console.log(`   🔗 TX: ${research.data.payment?.txId?.substring(0, 24)}...`);
     
-    if (res1.status === 402) {
-      const requirement = res1.headers.get('X-Payment-Required');
-      const reqData = JSON.parse(Buffer.from(requirement, 'base64').toString());
-      console.log('   Amount:', reqData.amount, 'microSTX');
-      console.log('   Recipient:', reqData.recipient);
-      
-      // 2. Create and send payment
-      console.log('\n💸 Creating payment...');
-      const paymentReq = createPaymentRequirement(
-        reqData.recipient,
-        reqData.amount,
-        { chainId: reqData.chainId }
-      );
-      
-      const payload = await createPaymentPayload(paymentReq, {
-        privateKey: BUYER_KEY,
-        address: buyerAddress
-      });
-      console.log('   Nonce:', payload.nonce);
-      console.log('   TX:', payload.serializedTx.substring(0, 40) + '...');
-      
-      // 3. Send with payment
-      console.log('\n📤 Request /summarize WITH payment...');
-      const encodedPayment = encodePayment(payload);
-      
-      const res2 = await fetch(`${SELLER_URL}/summarize`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Payment': encodedPayment
-        },
-        body: JSON.stringify({ 
-          text: 'The x402 protocol enables HTTP native payments using cryptocurrency.' 
-        })
-      });
-      
-      console.log('   Status:', res2.status);
-      
-      const paymentResponse = res2.headers.get('X-Payment-Response');
-      if (paymentResponse) {
-        const parsed = JSON.parse(paymentResponse);
-        console.log('   TX ID:', parsed.txId);
-        console.log('   Settled:', parsed.settled);
-      }
-      
-      if (res2.ok) {
-        const data = await res2.json();
-        console.log('\n✅ SUCCESS! Response:', JSON.stringify(data, null, 2));
-      } else {
-        const error = await res2.text();
-        console.log('\n❌ Error:', error);
-      }
-    }
+    console.log('\n' + '─'.repeat(60) + '\n');
+    
+    // Demo 3: ML Prediction
+    console.log('🔮 Demo 3: ML Price Prediction...\n');
+    const predict = await makePayment('/compute/predict', { 
+      series: [100, 105, 103, 108, 112, 110, 115],
+      horizon: 3
+    });
+    console.log(`   💰 Paid: ${predict.amount} STX`);
+    console.log(`   📈 Trend: ${predict.data.trend.toUpperCase()}`);
+    console.log(`   🎯 Predictions: ${predict.data.predictions.map(p => p.toFixed(1)).join(' → ')}`);
+    console.log(`   📊 Confidence: ${(predict.data.confidence * 100).toFixed(0)}%`);
+    console.log(`   🔗 TX: ${predict.data.payment?.txId?.substring(0, 24)}...`);
+    
+    console.log('\n' + '═'.repeat(60) + '\n');
+    
+    const totalSpent = btc.amount + research.amount + predict.amount;
+    
+    console.log('✅ DEMO COMPLETE!');
+    console.log(`   💸 Total spent: ${totalSpent.toFixed(6)} STX`);
+    console.log(`   📝 3 agent-to-agent payments on Stacks testnet!`);
+    console.log('\n   View transactions: https://explorer.stacks.co/?chain=testnet\n');
+    
   } catch (err) {
-    console.error('\n❌ Error:', err);
+    console.error('\n❌ Error:', err.message);
   } finally {
-    console.log('\n🛑 Stopping server...');
     seller.kill();
-    await sleep(500);
+    await sleep(300);
   }
 }
 
